@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Círculo Verde - Inicio</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #A5D6A7, #66BB6A);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 50px 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            max-width: 500px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .icon {
+            font-size: 60px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #2E7D32;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-yellow {
+            background-color: #FBC02D;
+        }
+
+        .btn-yellow:hover {
+            background-color: #F9A825;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="icon">🌱</div>
+    <h1>BIENVENID@ A<br>CÍRCULO VERDE</h1>
+    <p>Cultiva, aprende y conecta con nuestra app diseñada para todo el mundo</p>
+
+    <a th:href="@{/registro}" class="btn btn-yellow">Empezar viaje</a>
+    <a th:href="@{/huerto-login}" class="btn btn-yellow">Entrar al huerto</a>
+</div>
+
+</body>
+</html>
