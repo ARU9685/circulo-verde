@@ -1,85 +1,107 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Círculo Verde - Inicio</title>
+    <title>Inicio | Círculo Verde</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
+        /* Fondo tierra claro */
         body {
-            margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", sans-serif;
-            background: linear-gradient(135deg, #A5D6A7, #66BB6A);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        background-color: #f3e9d7;
+        /* beige suave tipo tierra */
         }
-
-        .container {
-            text-align: center;
-            background: white;
-            padding: 50px 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            max-width: 500px;
-            animation: fadeIn 0.6s ease-out;
+        /* Navbar verde */
+        .navbar {
+        background-color: #3b6e3b !important; /* verde natural */
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .navbar .nav-link, .navbar .navbar-brand {
+        color: white !important;
+        font-weight: 500;
         }
-
-        .icon {
-            font-size: 60px;
-            color: #4CAF50;
-            margin-bottom: 20px;
+        .navbar .nav-link:hover {
+        color: #d4ffd4 !important;
         }
-
-        h1 {
-            font-size: 28px;
-            color: #2E7D32;
-            margin-bottom: 10px;
+        /* Caja de bienvenida */
+        .welcome-box {
+        background-color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        text-align: center;
         }
-
-        p {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 30px;
+        .welcome-icon {
+        font-size: 3rem;
+        color: #3b6e3b;
         }
-
-        .btn {
-            display: inline-block;
-            margin: 10px;
-            padding: 12px 24px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-            color: white;
-        }
-
-        .btn-yellow {
-            background-color: #FBC02D;
-        }
-
-        .btn-yellow:hover {
-            background-color: #F9A825;
+        .welcome-buttons .btn {
+        margin: 0.5rem;
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="icon">🌱</div>
-    <h1>BIENVENID@ A<br>CÍRCULO VERDE</h1>
-    <p>Cultiva, aprende y conecta con nuestra app diseñada para todo el mundo</p>
+<!-- NAVBAR SUPERIOR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="/inicio">Círculo Verde</a>
 
-    <a th:href="@{/registro}" class="btn btn-yellow">Empezar viaje</a>
-    <a th:href="@{/huerto-login}" class="btn btn-yellow">Entrar al huerto</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCV">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarCV">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="/panel">Mi huerto</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="menuGestion" role="button" data-bs-toggle="dropdown">
+                        Gestión
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="menuGestion">
+                        <li><a class="dropdown-item" href="/calendario">Calendario</a></li>
+                        <li><a class="dropdown-item" href="/inventario">Inventario</a></li>
+                        <li><a class="dropdown-item" href="/diario">Diario</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <form class="d-flex me-3" action="/buscar" method="get">
+                <input class="form-control me-2" type="search" name="q" placeholder="Buscar..." aria-label="Buscar">
+                <button class="btn btn-outline-success" type="submit">Buscar</button>
+            </form>
+
+            <a href="/logout" class="btn btn-danger">Salir</a>
+        </div>
+    </div>
+</nav>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="welcome-box">
+                <div class="welcome-icon">🌱</div>
+                <h2 class="fw-bold mt-3">BIENVENID@ A CÍRCULO VERDE</h2>
+                <p class="text-muted">Cultiva, aprende y conecta con nuestra app diseñada para todo el mundo</p>
+
+                <div class="welcome-buttons">
+                    <a href="/registro" class="btn btn-warning">Empezar viaje</a>
+                    <a href="/panel" class="btn btn-warning">Entrar al huerto</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
+
