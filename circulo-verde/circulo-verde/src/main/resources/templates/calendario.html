@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendario | Círculo Verde</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Fondo tierra claro */
+        body {
+            background-color: #f2e7d5;
+        }
+
+        /* Navbar verde */
+        .navbar {
+            background-color: #2f5d2f !important;
+        }
+
+        .navbar .navbar-brand,
+        .navbar .nav-link {
+            color: #ffffff !important;
+            font-weight: 500;
+        }
+
+        .navbar .nav-link:hover {
+            color: #c8f7c5 !important;
+        }
+
+        /* Estilo del calendario */
+        .calendar-container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+        }
+
+        .calendar-day {
+            height: 110px;
+            border: 1px solid #e0d6c3;
+            background-color: #ffffff;
+            border-radius: 6px;
+            padding: 6px;
+            vertical-align: top;
+        }
+
+        .calendar-day:hover {
+            background-color: #f7f1e6;
+        }
+
+        .day-number {
+            font-weight: 600;
+            color: #2f5d2f;
+        }
+
+        .task-badge {
+            background-color: #2f5d2f;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .today {
+            border: 2px solid #2f5d2f;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR SUPERIOR VERDE -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="/inicio">Círculo Verde</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCV">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarCV">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/panel">Mi huerto</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="menuGestion" role="button" data-bs-toggle="dropdown">
+                        Gestión
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/calendario">Calendario</a></li>
+                        <li><a class="dropdown-item" href="/inventario">Inventario</a></li>
+                        <li><a class="dropdown-item" href="/diario">Diario</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+
+            <form class="d-flex me-3" action="/buscar" method="get">
+                <input class="form-control me-2" type="search" name="q" placeholder="Buscar..." aria-label="Buscar">
+                <button class="btn btn-light" type="submit">Buscar</button>
+            </form>
+
+            <a href="/logout" class="btn btn-danger">Salir</a>
+        </div>
+    </div>
+</nav>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="container mt-4">
+
+    <div class="calendar-container">
+
+        <h2 class="fw-bold mb-2">Calendario de tareas</h2>
+        <p class="text-muted">Organiza tus siembras, riegos y cuidados del huerto</p>
+
+        <!-- Selector de mes -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <button class="btn btn-outline-success">&lt; Mes anterior</button>
+            <h4 class="fw-bold">Junio 2024</h4>
+            <button class="btn btn-outline-success">Mes siguiente &gt;</button>
+        </div>
+
+        <!-- Calendario -->
+        <div class="table-responsive">
+            <table class="table text-center align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Lun</th>
+                    <th>Mar</th>
+                    <th>Mié</th>
+                    <th>Jue</th>
+                    <th>Vie</th>
+                    <th>Sáb</th>
+                    <th>Dom</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr>
+                    <td class="calendar-day"><div class="day-number">1</div></td>
+                    <td class="calendar-day"><div class="day-number">2</div></td>
+                    <td class="calendar-day"><div class="day-number">3</div></td>
+                    <td class="calendar-day"><div class="day-number">4</div></td>
+                    <td class="calendar-day today">
+                        <div class="day-number">5</div>
+                        <span class="task-badge">Riego tomates</span>
+                    </td>
+                    <td class="calendar-day"><div class="day-number">6</div></td>
+                    <td class="calendar-day"><div class="day-number">7</div></td>
+                </tr>
+
+                <tr>
+                    <td class="calendar-day"><div class="day-number">8</div></td>
+                    <td class="calendar-day"><div class="day-number">9</div></td>
+                    <td class="calendar-day">
+                        <div class="day-number">10</div>
+                        <span class="task-badge">Siembra lechuga</span>
+                    </td>
+                    <td class="calendar-day"><div class="day-number">11</div></td>
+                    <td class="calendar-day"><div class="day-number">12</div></td>
+                    <td class="calendar-day"><div class="day-number">13</div></td>
+                    <td class="calendar-day"><div class="day-number">14</div></td>
+                </tr>
+
+                <!-- Añade más filas según el mes -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
