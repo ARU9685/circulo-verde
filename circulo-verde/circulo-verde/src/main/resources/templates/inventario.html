@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mi huerto | Círculo Verde</title>
+    <title>Inventario | Círculo Verde</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap -->
@@ -29,22 +29,27 @@
             color: #c8f7c5 !important;
         }
 
-        /* Tarjetas del panel */
-        .panel-card {
+        /* Caja del inventario */
+        .inventory-container {
             background-color: #ffffff;
+            padding: 2rem;
             border-radius: 12px;
-            padding: 1.5rem;
             box-shadow: 0 0 10px rgba(0,0,0,0.08);
-            height: 100%;
         }
 
-        .panel-title {
-            font-weight: 600;
+        .inventory-title {
             color: #2f5d2f;
+            font-weight: 700;
         }
 
-        .weather-icon {
-            width: 60px;
+        .btn-add {
+            background-color: #2f5d2f;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background-color: #244a24;
+            color: white;
         }
     </style>
 </head>
@@ -93,76 +98,65 @@
 <!-- CONTENIDO PRINCIPAL -->
 <div class="container mt-4">
 
-    <!-- Saludo -->
-    <div class="mb-4">
-        <h2 class="fw-bold">Buenos días,<strong th:text="${nombre}"></strong></h2>
-        <p class="text-muted" th:text="${zona}"></p>
-    </div>
+    <div class="inventory-container">
 
-    <!-- FILA 1: Tiempo + Calendario -->
-    <div class="row g-4">
-
-        <!-- Tiempo -->
-        <div class="col-md-4">
-            <div class="panel-card text-center">
-                <h5 class="panel-title mb-3">Tiempo actual</h5>
-
-                <img class="weather-icon" src="http://openweathermap.org/img/wn/01d.png" alt="icono tiempo">
-                <p class="mt-2">Soleado</p>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="inventory-title">Inventario del huerto</h2>
+            <button class="btn btn-add">Añadir producto</button>
         </div>
 
-        <!-- Calendario -->
-        <div class="col-md-8">
-            <div class="panel-card">
-                <h5 class="panel-title mb-3">Calendario</h5>
-                <p>Próxima tarea: <strong>Siembra de tomates — 24 Jun</strong></p>
-                <a href="/calendario" class="btn btn-success mt-2">Ver calendario</a>
-            </div>
+        <p class="text-muted">Controla tus semillas, herramientas y materiales</p>
+
+        <!-- Tabla de inventario -->
+        <div class="table-responsive mt-3">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Cantidad</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr>
+                    <td>Semillas de tomate</td>
+                    <td>Semillas</td>
+                    <td>20 unidades</td>
+                    <td><span class="badge bg-success">Disponible</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">Editar</button>
+                        <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Abono orgánico</td>
+                    <td>Fertilizante</td>
+                    <td>5 kg</td>
+                    <td><span class="badge bg-warning text-dark">Bajo</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">Editar</button>
+                        <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Guantes de jardinería</td>
+                    <td>Herramientas</td>
+                    <td>1 par</td>
+                    <td><span class="badge bg-success">Disponible</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">Editar</button>
+                        <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
-    </div>
-
-    <!-- FILA 2: Inventario + Diario + Estadísticas -->
-    <div class="row g-4 mt-1">
-
-        <!-- Inventario -->
-        <div class="col-md-4">
-            <div class="panel-card">
-                <h5 class="panel-title mb-3">Inventario</h5>
-                <p>Tienes <strong>4</strong> productos</p>
-                <a href="/inventario" class="btn btn-outline-success">Ver inventario</a>
-            </div>
-        </div>
-
-        <!-- Diario -->
-        <div class="col-md-4">
-            <div class="panel-card">
-                <h5 class="panel-title mb-3">Diario</h5>
-                <p><strong>5</strong> entradas registradas</p>
-                <a href="/diario" class="btn btn-outline-success">Ver diario</a>
-            </div>
-        </div>
-
-        <!-- Estadísticas -->
-        <div class="col-md-4">
-            <div class="panel-card">
-                <h5 class="panel-title mb-3">Estadísticas</h5>
-                <p>Progreso mensual: <strong>75%</strong></p>
-                <a href="/estadisticas" class="btn btn-outline-success">Ver estadísticas</a>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Recomendación del día -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="panel-card">
-                <h5 class="panel-title mb-2">Recomendación del día</h5>
-                <p>Hoy en zona Mediterránea: ideal para sembrar lechugas</p>
-            </div>
-        </div>
     </div>
 
 </div>
@@ -172,4 +166,3 @@
 
 </body>
 </html>
-
