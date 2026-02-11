@@ -116,13 +116,16 @@
         <label>Contraseña:</label>
         <input type="password" th:field="*{contraseña}">
         <div class="error" th:if="${#fields.hasErrors('contraseña')}" th:errors="*{contraseña}"></div>
-        <label>Zona climática:</label>
-        <select th:field="*{zonaClimatica}">
-            <option value="">Selecciona una zona</option>
-            <option value="Mediterránea">Mediterránea</option>
-            <option value="Continental">Continental</option>
-            <option value="Atlántica">Atlántica</option>
-            <option value="Subtropical">Subtropical</option>
+        <label>Ciudad:</label>
+        <select th:field="*{ciudad}">
+            <option value="">Selecciona una ciudad</option>
+            <option value="Madrid">Madrid</option>
+            <option value="Barcelona">Barcelona</option>
+            <option value="Valencia">Valencia</option>
+            <option value="Sevilla">Sevilla</option>
+            <option value="Bilbao">Bilbao</option>
+            <option value="Zaragoza">Zaragoza</option>
+            <option value="Málaga">Málaga</option>
         </select>
         <button type="submit">Registrarse</button>
     </form>

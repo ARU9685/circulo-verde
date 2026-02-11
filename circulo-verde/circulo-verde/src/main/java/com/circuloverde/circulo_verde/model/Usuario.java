@@ -22,6 +22,7 @@ public class Usuario {
     @Column(unique = true)
     private String email;
 
+    private String ciudad;
     private String zonaClimatica;
 
     private LocalDate fechaRegistro = LocalDate.now();
@@ -38,6 +39,9 @@ public class Usuario {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getCiudad() { return ciudad; }
+    public void setCiudad(String ciudad) { this.ciudad = ciudad; }
 
     public String getZonaClimatica() { return zonaClimatica; }
     public void setZonaClimatica(String zonaClimatica) { this.zonaClimatica = zonaClimatica; }

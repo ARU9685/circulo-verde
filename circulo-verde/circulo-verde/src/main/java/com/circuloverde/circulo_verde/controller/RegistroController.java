@@ -2,10 +2,8 @@ package com.circuloverde.circulo_verde.controller;
 
 import com.circuloverde.circulo_verde.model.Usuario;
 import com.circuloverde.circulo_verde.repository.UsuarioRepository;
+import com.circuloverde.circulo_verde.service.ZonaClimaticaService;
 import jakarta.validation.Valid;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,9 +15,12 @@ import java.util.List;
 public class RegistroController {
 
     private final UsuarioRepository repo;
+    private final ZonaClimaticaService zonaClimaticaService;
 
-    public RegistroController(UsuarioRepository repo) {
+    public RegistroController(UsuarioRepository repo, ZonaClimaticaService zonaClimaticaService) {
+
         this.repo = repo;
+        this.zonaClimaticaService = zonaClimaticaService;
     }
 
     @GetMapping("/registro")
@@ -40,6 +41,9 @@ public class RegistroController {
         if (result.hasErrors()) {
             return "registro";
         }
+        // asignar zona segun ciudad
+        String zona = zonaClimaticaService.obtenerZonaPorCiudad(usuario.getCiudad());
+        usuario.setZonaClimatica(zona);
 
         repo.save(usuario);
 
