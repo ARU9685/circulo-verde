@@ -116,28 +116,16 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2 class="diary-title">Diario del huerto</h2>
-      <button class="btn btn-add">Nueva entrada</button>
+      <a href="/diario/nueva" class="btn btn-add">Nueva entrada</a>
     </div>
 
     <p class="text-muted">Registra tus avances, observaciones y aprendizajes</p>
 
-    <!-- Entradas del diario (simuladas por ahora) -->
-    <div class="entry-card">
-      <div class="entry-date">3 junio 2024</div>
-      <h5 class="mt-1">Primeras flores en los tomates</h5>
-      <p>Hoy he visto las primeras flores en las tomateras. El riego y el sol están funcionando muy bien.</p>
-    </div>
-
-    <div class="entry-card">
-      <div class="entry-date">28 mayo 2024</div>
-      <h5 class="mt-1">Trasplante de lechugas</h5>
-      <p>He trasplantado las lechugas al bancal principal. El suelo estaba perfecto después de la lluvia.</p>
-    </div>
-
-    <div class="entry-card">
-      <div class="entry-date">20 mayo 2024</div>
-      <h5 class="mt-1">Preparación del terreno</h5>
-      <p>He añadido compost y removido la tierra. Todo listo para las nuevas siembras.</p>
+    <!-- Entradas del diario -->
+    <div th:each="entrada : ${entradas}" class="entry-card">
+      <div class="entry-date" th:text="${entrada.fecha}"></div>
+      <h5 class="mt-1" th:text="${entrada.titulo}"></h5>
+      <p th:text="${entrada.contenido}"></p>
     </div>
 
   </div>

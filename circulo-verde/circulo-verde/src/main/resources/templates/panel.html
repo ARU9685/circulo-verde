@@ -115,8 +115,9 @@
             <div class="panel-card text-center">
                 <h5 class="panel-title mb-3">Tiempo actual</h5>
 
-                <img class="weather-icon" src="http://openweathermap.org/img/wn/01d.png" alt="icono tiempo">
-                <p class="mt-2">Soleado</p>
+                <img class="weather-icon" th:src="${tiempoIcono}" alt="icono tiempo">
+                <p class="mt-2" th:text="${tiempoTexto}"></p>
+
             </div>
         </div>
 

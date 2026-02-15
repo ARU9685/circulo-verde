@@ -17,8 +17,8 @@ public class WeatherService {
         Map<String, String> datos = new HashMap<>();
 
         try {
-            String url = "https://api.openweathermap.org/data/2.5/weather?q=Castellon,es&APPID="
-                    + API_KEY;
+            String url = "https://api.openweathermap.org/data/2.5/weather?q=" + ciudad + ",es&APPID="
+                    + API_KEY + "&lang=es";
 
             RestTemplate restTemplate = new RestTemplate();
             String respuesta = restTemplate.getForObject(url, String.class);
@@ -27,7 +27,12 @@ public class WeatherService {
             JsonNode json = mapper.readTree(respuesta);
 
             String descripcion = json.get("weather").get(0).get("description").asText();
-            double temperatura = json.get("main").get("temp").asDouble();
+
+            // Temperatura en Kelvin → Celsius
+            double tempKelvin = json.get("main").get("temp").asDouble();
+            double tempCelsius = tempKelvin - 273.15;
+            String temperatura = String.format("%.1f", tempCelsius);
+
             String icono = json.get("weather").get(0).get("icon").asText();
 
             datos.put("texto", "Hoy hace " + temperatura + "°C en " + ciudad + " y está " + descripcion);
