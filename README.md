@@ -1,6 +1,6 @@
 # 🌱 CÍRCULO VERDE – Gestión de Huerto Personal
 
-<img src="circulo-verde/src/main/resources/static/img/LogoCirculoVerde.jpeg" width="300px">
+![Logo](circulo-verde/src/main/resources/static/img/LogoCirculoVerde.jpeg)
 
 Aplicación web desarrollada con **Spring Boot**, **Thymeleaf** y **MySQL**, diseñada para ayudar a los usuarios a gestionar su huerto personal habilitado a zonas climáticas: tareas, calendario, estadísticas y seguimiento diario.
 
