@@ -9,24 +9,26 @@ import java.util.Map;
 public class CalendarioSiembraService {
 
     public List<String> obtenerSiembrasDelMes(String zona) {
-
         int mes = LocalDate.now().getMonthValue();
-
-        return switch (zona) {
-            case "Mediterránea" -> siembrasMediterranea().getOrDefault(mes, List.of());
-            case "Continental" -> siembrasContinental().getOrDefault(mes, List.of());
-            case "Atlántica" -> siembrasAtlantica().getOrDefault(mes, List.of());
-            case "Subtropical" -> siembrasSubtropical().getOrDefault(mes, List.of());
-            default -> List.of("Lechuga", "Zanahoria");
-        };
+        return obtenerSiembrasDelMes(zona, mes);
     }
 
     public List<String> obtenerSiembrasDelMes(String zona, int mes) {
+
         return switch (zona) {
-            case "Mediterránea" -> siembrasMediterranea().getOrDefault(mes, List.of());
-            case "Continental" -> siembrasContinental().getOrDefault(mes, List.of());
-            case "Atlántica" -> siembrasAtlantica().getOrDefault(mes, List.of());
-            case "Subtropical" -> siembrasSubtropical().getOrDefault(mes, List.of());
+
+            case "Mediterránea" ->
+                    siembrasMediterranea().getOrDefault(mes, List.of());
+
+            case "Continental" ->
+                    siembrasContinental().getOrDefault(mes, List.of());
+
+            case "Atlántica" ->
+                    siembrasAtlantica().getOrDefault(mes, List.of());
+
+            case "Subtropical" ->
+                    siembrasSubtropical().getOrDefault(mes, List.of());
+
             default -> List.of();
         };
     }
@@ -73,4 +75,5 @@ public class CalendarioSiembraService {
         );
     }
 }
+
 

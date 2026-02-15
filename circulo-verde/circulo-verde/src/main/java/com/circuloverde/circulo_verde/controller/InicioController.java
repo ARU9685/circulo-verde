@@ -8,7 +8,8 @@ public class InicioController {
 
     @GetMapping("/")
     public String mostrarInicio() {
-        return "inicio"; // inicio.html
+        return "inicio";
+        // inicio.html
     }
 }
 

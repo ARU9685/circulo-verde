@@ -16,8 +16,11 @@ public class SeguridadConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable())
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login","/registro","/panel", "/huerto-login" , "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers( "/tarea-nueva", "/tarea-guardar", "/tarea-editar/**", "/tarea-eliminar/**" ).authenticated()
                         .requestMatchers( "/","/inicio").authenticated()
                         .anyRequest().authenticated()
                 )

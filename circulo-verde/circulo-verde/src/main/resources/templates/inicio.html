@@ -44,7 +44,43 @@
         .welcome-buttons .btn {
         margin: 0.5rem;
         }
+        .animacion-inicio {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: aparecer 0.8s ease-out forwards;
+        }
+        @keyframes aparecer {
+           to {
+               opacity: 1;
+               transform: translateY(0);
+           }
+        }
+
+       .fondo-bienvenida {
+        position: relative;
+        overflow: hidden;
+        padding: 40px;
+        border-radius: 20px;
+        background: #e8ffe8;
+        }
+
+       .fondo-bienvenida::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(0,150,0,0.15) 0%, transparent 70%);
+        animation: moverOndas 8s infinite linear;
+        }
+
+        @keyframes moverOndas {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+        }
     </style>
+
 </head>
 
 <body>
@@ -87,24 +123,28 @@
 </nav>
 
 <!-- CONTENIDO PRINCIPAL -->
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+<div class="fondo-bienvenida">
 
-            <div class="welcome-box">
-                <div class="welcome-icon"><img src="../img/LogoCirculoVerde.jpeg" alt="Logo" class="me-2" style="height:100px;">
-                </div>
-                <h2 class="fw-bold mt-3">BIENVENID@ A CÍRCULO VERDE</h2>
-                <p class="text-muted">Cultiva, aprende y conecta con nuestra app diseñada para todo el mundo</p>
+    <div class="container mt-5 animacion-inicio">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
 
-                <div class="welcome-buttons">
-                    <a href="/registro" class="btn btn-warning">Empezar viaje</a>
-                    <a href="/panel" class="btn btn-warning">Entrar al huerto</a>
+                <div class="welcome-box">
+                    <div class="welcome-icon"><img src="../img/LogoCirculoVerde.jpeg" alt="Logo" class="me-2" style="height:100px;">
+                    </div>
+                    <h2 class="fw-bold mt-3">BIENVENID@ A CÍRCULO VERDE</h2>
+                    <p class="text-muted">Cultiva, aprende y conecta con nuestra app diseñada para todo el mundo</p>
+
+                    <div class="welcome-buttons">
+                        <a href="/registro" class="btn btn-warning">Empezar viaje</a>
+                        <a href="/panel" class="btn btn-warning">Entrar al huerto</a>
+                    </div>
                 </div>
+
             </div>
-
         </div>
     </div>
+
 </div>
 
 <!-- Bootstrap JS -->

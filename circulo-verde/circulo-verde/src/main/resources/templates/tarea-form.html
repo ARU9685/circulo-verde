@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Tareas</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .badge-preview {
+            font-size: 1rem;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container mt-5" style="max-width: 600px;">
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h3 class="mb-4 text-center fw-bold"
+                th:text="${tarea.id == null ? 'Nueva tarea' : 'Editar tarea'}">
+            </h3>
+
+            <form action="/tarea-guardar" method="post" th:object="${tarea}">
+
+                <!-- ID oculto -->
+                <input type="hidden" th:field="*{id}"/>
+
+                <!-- Fecha -->
+                <div class="mb-3">
+                    <label class="form-label">Fecha</label>
+                    <input type="date" class="form-control" th:field="*{fecha}" required>
+                </div>
+
+                <!-- Título -->
+                <div class="mb-3">
+                    <label class="form-label">Título</label>
+                    <input type="text" class="form-control" th:field="*{titulo}" placeholder="Ej: Riego tomates" required>
+                </div>
+
+                <!-- Tipo -->
+                <div class="mb-3">
+                    <label class="form-label">Tipo de tarea</label>
+                    <select class="form-select" th:field="*{tipo}" id="tipoSelect" onchange="actualizarPreview()">
+                        <option value="riego">Riego</option>
+                        <option value="siembra">Siembra</option>
+                        <option value="abonado">Abonado</option>
+                        <option value="mantenimiento">Mantenimiento</option>
+                    </select>
+                </div>
+
+                <!-- Vista previa del color -->
+                <div class="mb-4">
+                    <label class="form-label">Vista previa del color</label>
+                    <div id="previewBadge" class="badge-preview bg-primary text-white">
+                        Riego
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-between">
+                    <a href="/calendario" class="btn btn-secondary">Cancelar</a>
+                    <button class="btn btn-success">Guardar tarea</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function actualizarPreview() {
+        const tipo = document.getElementById("tipoSelect").value;
+        const badge = document.getElementById("previewBadge");
+
+        badge.className = "badge-preview text-white";
+
+        if (tipo === "riego") {
+            badge.classList.add("bg-primary");
+            badge.textContent = "Riego";
+        }
+        if (tipo === "siembra") {
+            badge.classList.add("bg-success");
+            badge.textContent = "Siembra";
+        }
+        if (tipo === "abonado") {
+            badge.classList.add("bg-warning", "text-dark");
+            badge.textContent = "Abonado";
+        }
+        if (tipo === "mantenimiento") {
+            badge.classList.add("bg-secondary");
+            badge.textContent = "Mantenimiento";
+        }
+    }
+
+    // Inicializar vista previa al cargar
+    actualizarPreview();
+</script>
+
+</body>
+</html>

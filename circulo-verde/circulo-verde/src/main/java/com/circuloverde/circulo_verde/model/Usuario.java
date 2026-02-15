@@ -16,7 +16,7 @@ public class Usuario {
     @Column(unique = true)
     private String nombre;
 
-    private String contraseña;
+    private String contrasenia;
 
     @Email(message = "Correo inválido")
     @Column(unique = true)
@@ -34,8 +34,8 @@ public class Usuario {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getContraseña() { return contraseña; }
-    public void setContraseña(String contraseña) { this.contraseña = contraseña; }
+    public String getContrasenia() { return contrasenia; }
+    public void setContrasenia(String contrasenia) { this.contrasenia = contrasenia; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }

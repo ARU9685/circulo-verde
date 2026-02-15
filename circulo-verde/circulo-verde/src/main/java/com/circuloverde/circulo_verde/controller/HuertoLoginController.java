@@ -23,13 +23,14 @@ public class HuertoLoginController {
 
     @PostMapping("/huerto-login")
     public String procesarLogin(@RequestParam String nombre,
-                                @RequestParam String contraseña,
+                                @RequestParam String contrasenia,
                                 HttpSession session,
                                 Model model) {
 
         Usuario usuario = usuarioRepository.findByNombre(nombre);
 
-        if (usuario == null || !usuario.getContraseña().equals(contraseña)) {
+        if (usuario == null || usuario.getContrasenia() == null ||
+                !usuario.getContrasenia().equals(contrasenia)) {
             model.addAttribute("error", "Nombre o contraseña incorrectos");
             return "/huerto-login";
         }
