@@ -1,6 +1,6 @@
 # 🌱 CÍRCULO VERDE – Gestión de Huerto Personal
 
-Aplicación web desarrollada con **Spring Boot**, **Thymeleaf** y **MySQL**, diseñada para ayudar a los usuarios a gestionar su huerto personal: tareas, calendario, estadísticas y seguimiento diario.
+Aplicación web desarrollada con **Spring Boot**, **Thymeleaf** y **MySQL**, diseñada para ayudar a los usuarios a gestionar su huerto personal habilitado a zonas climáticas: tareas, calendario, estadísticas y seguimiento diario.
 
 ---
 
@@ -46,5 +46,4 @@ Tablas principales:
 
 ---
 
-## 🧩 Estructura del proyecto
 
