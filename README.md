@@ -6,22 +6,22 @@ Aplicación web desarrollada con **Spring Boot**, **Thymeleaf** y **MySQL**, dis
 
 ---
 
-## 📌 Características principales
+##  Características principales
 
-### 👤 Gestión de usuarios
+###  Gestión de usuarios
 - Registro de nuevos usuarios  
 - Inicio de sesión personalizado  
 - Validación de datos (nombre, email, contraseña, ciudad, zona climática)  
 - Fecha de registro automática  
 
-### 🌿 Gestión del huerto
+###  Gestión del huerto
 - Panel principal con acceso rápido a todas las funciones  
 - Registro, edición y eliminación de tareas  
 - Vista de calendario  
 - Estadísticas básicas  
 - Diario de actividades  
 
-### 🗄️ Base de datos
+###   Base de datos
 Motor: **MySQL / MariaDB**
 
 Tablas principales:
@@ -34,7 +34,7 @@ Tablas principales:
 
 ---
 
-## 🧱 Tecnologías utilizadas
+##  Tecnologías utilizadas
 
 | Tecnología | Uso |
 |-----------|-----|
