@@ -3,9 +3,13 @@ package com.circuloverde.circulo_verde.controller;
 import com.circuloverde.circulo_verde.model.Tarea;
 import com.circuloverde.circulo_verde.model.Usuario;
 import com.circuloverde.circulo_verde.service.CalendarioSiembraService;
+import com.circuloverde.circulo_verde.service.SativumService;
+import com.circuloverde.circulo_verde.service.WeatherService;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.circuloverde.circulo_verde.service.TareaService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,17 +19,23 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CalendarioController {
 
     private final CalendarioSiembraService calendarioSiembraService;
     private final TareaService tareaService;
+    private final SativumService sativumService;
+    @Autowired
+    private WeatherService weatherService;
+
 
     public CalendarioController(CalendarioSiembraService calendarioSiembraService,
-                                TareaService tareaService) {
+                                TareaService tareaService, SativumService sativumService) {
         this.calendarioSiembraService = calendarioSiembraService;
         this.tareaService = tareaService;
+        this.sativumService = sativumService;
     }
 
     @GetMapping("/calendario")
@@ -41,13 +51,64 @@ public class CalendarioController {
         }
 
         LocalDate hoy = LocalDate.now();
-        if (mes == null) mes = hoy.getMonthValue();
-        if (año == null) año = hoy.getYear();
+
+        if (mes == null) {
+            mes = hoy.getMonthValue();
+        }
+
+        if (año == null) {
+            año = hoy.getYear();
+        }
 
         String zona = usuario.getZonaClimatica();
 
         // Siembras recomendadas para este mes
         List<String> siembrasMes = calendarioSiembraService.obtenerSiembrasDelMes(zona, mes);
+
+
+        // Obtener clima de la ciudad del usuario
+        String ciudad = usuario.getCiudad();
+        Map<String, String> clima = weatherService.obtenerTiempo(ciudad);
+
+        // Enviar clima a la vista
+        model.addAttribute("clima", clima);
+
+        // Siembras del mes
+        model.addAttribute("cultivosZona", siembrasMes);
+
+        // Ajuste por clima
+        List<String> cultivosAjustados = calendarioSiembraService.ajustarSiembrasPorClima(siembrasMes, clima);
+        model.addAttribute("cultivosClima", cultivosAjustados);
+
+        // Plagas
+        JsonNode plagasJson = sativumService.get("/pests?crop=1");
+        List<JsonNode> plagas = new ArrayList<>();
+
+        if (plagasJson != null && plagasJson.isArray()) {
+            plagasJson.forEach(plagas::add);
+        }
+
+        model.addAttribute("plagas", plagas);
+
+        // Recomendación de fertilizantes
+        String body = """ 
+        {
+           "npkToCover": { 
+           "n": 100, 
+           "p": 20, 
+           "k": 30 
+           } 
+        } 
+        """;
+        //fertilizantes
+        JsonNode fertJson = sativumService.post("/nutrients/fertilizers/recommendation", body);
+        List<JsonNode> fertilizantes = new ArrayList<>();
+
+        if (fertJson != null && fertJson.isArray()) {
+            fertJson.forEach(fertilizantes::add);
+        }
+
+        model.addAttribute("fertilizantes", fertilizantes);
 
         // Generar calendario
         YearMonth ym = YearMonth.of(año, mes);

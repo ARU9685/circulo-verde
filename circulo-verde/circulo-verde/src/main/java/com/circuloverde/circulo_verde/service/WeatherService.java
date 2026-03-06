@@ -47,6 +47,46 @@ public class WeatherService {
         }
     }
 
+    public JsonNode obtenerPronostico(double lat, double lon) {
+        try {
+            String url = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat +
+                    "&lon=" + lon +
+                    "&units=metric&lang=es&appid=" + API_KEY;
+
+            RestTemplate restTemplate = new RestTemplate();
+            String respuesta = restTemplate.getForObject(url, String.class);
+
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readTree(respuesta);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    //Metodo para SATIVUM
+    public double[] obtenerCoordenadas(String ciudad) {
+        try {
+            String url = "https://api.openweathermap.org/data/2.5/weather?q=" + ciudad + ",es&APPID="
+                    + API_KEY + "&lang=es";
+
+            RestTemplate restTemplate = new RestTemplate();
+            String respuesta = restTemplate.getForObject(url, String.class);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode json = mapper.readTree(respuesta);
+
+            double lat = json.get("coord").get("lat").asDouble();
+            double lon = json.get("coord").get("lon").asDouble();
+
+            return new double[]{lat, lon};
+
+        } catch (Exception e) {
+            return new double[]{0, 0};
+        }
+    }
 }
 
 

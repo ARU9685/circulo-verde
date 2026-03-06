@@ -5,6 +5,8 @@ import com.circuloverde.circulo_verde.model.Usuario;
 import com.circuloverde.circulo_verde.repository.UsuarioRepository;
 import com.circuloverde.circulo_verde.service.RecomendacionesService;
 import com.circuloverde.circulo_verde.service.CalendarioSiembraService;
+import com.circuloverde.circulo_verde.service.SativumService;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -22,15 +24,18 @@ public class PanelController {
     private final WeatherService weatherService;
     private final RecomendacionesService recomendacionesService;
     private final CalendarioSiembraService calendarioSiembraService;
+    private final SativumService sativumService;
 
     public PanelController(UsuarioRepository usuarioRepository,
                            WeatherService weatherService,
                            RecomendacionesService recomendacionesService,
-                           CalendarioSiembraService calendarioSiembraService) {
+                           CalendarioSiembraService calendarioSiembraService,
+                           SativumService sativumService) {
         this.usuarioRepository = usuarioRepository;
         this.weatherService = weatherService;
         this.recomendacionesService = recomendacionesService;
         this.calendarioSiembraService = calendarioSiembraService;
+        this.sativumService = sativumService;
     }
 
     @GetMapping("/panel")
@@ -52,6 +57,16 @@ public class PanelController {
         model.addAttribute("nombre", usuario.getNombre());
         model.addAttribute("ciudad", usuario.getCiudad());
         model.addAttribute("zona", usuario.getZonaClimatica());
+
+
+        // 2. COORDENADAS PARA SATIVUM //
+
+        double[] coords = weatherService.obtenerCoordenadas(ciudad);
+        double lat = coords[0];
+        double lon = coords[1];
+
+        JsonNode pronostico = weatherService.obtenerPronostico(lat, lon);
+        model.addAttribute("pronostico", pronostico);
 
         model.addAttribute("tareas", List.of("Siembra de tomates 24 Jun (mañana)"));
         model.addAttribute("productos", 4);

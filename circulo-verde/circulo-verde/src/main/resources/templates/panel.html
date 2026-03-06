@@ -119,6 +119,17 @@
                 <p class="mt-2" th:text="${tiempoTexto}"></p>
 
             </div>
+            <!-- Clima extendido con OneCall 2.5 -->
+            <div class="agro-section" th:if="${climaAgricola != null}">
+                <h3>Clima</h3>
+                <p th:if="${climaAgricola['current'] != null}" th:text="'Índice UV: ' + ${climaAgricola['current']['uvi']}"></p>
+                <p th:if="${climaAgricola['current'] != null}" th:text="'Viento: ' + ${climaAgricola['current']['wind_speed']} + ' m/s'"></p>
+                <p th:if="${climaAgricola['current'] != null}" th:text="'Humedad: ' + ${climaAgricola['current']['humidity']} + '%'"></p>
+                <p th:if="${climaAgricola['current'] != null}" th:text="'Temperatura: ' + ${climaAgricola['current']['temp']} + '°C'"></p>
+            </div>
+            <p th:if="${climaAgricola == null}" class="text-muted"> No hay datos agrícolas disponibles para esta ubicación. </p>
+
+
         </div>
 
         <!-- Calendario -->
@@ -172,6 +183,7 @@
                 <p>Hoy en zona Mediterránea: ideal para sembrar lechugas</p>
             </div>
         </div>
+
     </div>
     <!-- Cultivos recomendados según zona -->
     <div class="row mt-4">
