@@ -118,15 +118,17 @@
                 <img class="weather-icon" th:src="${tiempoIcono}" alt="icono tiempo">
                 <p class="mt-2" th:text="${tiempoTexto}"></p>
 
+                <!-- Clima -->
+                <div class="agro-section" th:if="${climaAgricola != null}">
+                    <h3>Clima</h3>
+                    <p th:if="${climaAgricola['current'] != null}" th:text="'Índice UV: ' + ${climaAgricola['current']['uvi']}"></p>
+                    <p th:if="${climaAgricola['current'] != null}" th:text="'Viento: ' + ${climaAgricola['current']['wind_speed']} + ' m/s'"></p>
+                    <p th:if="${climaAgricola['current'] != null}" th:text="'Humedad: ' + ${climaAgricola['current']['humidity']} + '%'"></p>
+                    <p th:if="${climaAgricola['current'] != null}" th:text="'Temperatura: ' + ${climaAgricola['current']['temp']} + '°C'"></p>
+                </div>
+
             </div>
-            <!-- Clima extendido con OneCall 2.5 -->
-            <div class="agro-section" th:if="${climaAgricola != null}">
-                <h3>Clima</h3>
-                <p th:if="${climaAgricola['current'] != null}" th:text="'Índice UV: ' + ${climaAgricola['current']['uvi']}"></p>
-                <p th:if="${climaAgricola['current'] != null}" th:text="'Viento: ' + ${climaAgricola['current']['wind_speed']} + ' m/s'"></p>
-                <p th:if="${climaAgricola['current'] != null}" th:text="'Humedad: ' + ${climaAgricola['current']['humidity']} + '%'"></p>
-                <p th:if="${climaAgricola['current'] != null}" th:text="'Temperatura: ' + ${climaAgricola['current']['temp']} + '°C'"></p>
-            </div>
+
             <p th:if="${climaAgricola == null}" class="text-muted"> No hay datos agrícolas disponibles para esta ubicación. </p>
 
 
@@ -136,8 +138,10 @@
         <div class="col-md-8">
             <div class="panel-card">
                 <h5 class="panel-title mb-3">Calendario</h5>
-                <p>Próxima tarea: <strong>Siembra de tomates — 24 Jun</strong></p>
-                <a href="/calendario" class="btn btn-success mt-2">Ver calendario</a>
+                <p>Próxima tarea:<strong th:text="${tareas.size() > 0 ? tareas[0].titulo : 'No hay tareas próximas'}"></strong>
+                    <span th:if="${tareas.size() > 0}">
+        — <span th:text="${tareas[0].fecha}"></span></span></p>
+                <a href="/calendario" class="btn btn-outline-success mt-2">Ver calendario</a>
             </div>
         </div>
 

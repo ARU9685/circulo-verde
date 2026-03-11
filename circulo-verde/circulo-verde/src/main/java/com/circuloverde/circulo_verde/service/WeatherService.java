@@ -26,23 +26,37 @@ public class WeatherService {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode json = mapper.readTree(respuesta);
 
+            //descripción
             String descripcion = json.get("weather").get(0).get("description").asText();
 
             // Temperatura en Kelvin → Celsius
             double tempKelvin = json.get("main").get("temp").asDouble();
             double tempCelsius = tempKelvin - 273.15;
-            String temperatura = String.format("%.1f", tempCelsius);
+            String temperatura = String.format("%.1f", tempCelsius).replace(",", ".");
+
+            // Humedad
+            String humedad = json.get("main").get("humidity").asText().replace(",", ".");
+
+            // Viento
+            String viento = json.get("wind").get("speed").asText().replace(",", ".");
 
             String icono = json.get("weather").get(0).get("icon").asText();
 
             datos.put("texto", "Hoy hace " + temperatura + "°C en " + ciudad + " y está " + descripcion);
             datos.put("icono", "https://openweathermap.org/img/wn/" + icono + "@2x.png");
+            datos.put("temperatura", temperatura);
+            datos.put("humedad", humedad);
+            datos.put("viento", viento);
+            datos.put("descripcion", descripcion);
 
             return datos;
 
         } catch (Exception e) {
             datos.put("texto", "No se pudo obtener el tiempo");
             datos.put("icono", "");
+            datos.put("temperatura", "N/D");
+            datos.put("humedad", "N/D");
+            datos.put("viento", "N/D");
             return datos;
         }
     }

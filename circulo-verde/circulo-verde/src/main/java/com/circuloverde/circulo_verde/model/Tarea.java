@@ -12,6 +12,8 @@ public class Tarea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long idUsuario;
+
     private String fecha;   // Formato YYYY-MM-DD
     private String titulo;
     private String tipo;    // riego, siembra, abonado, mantenimiento
@@ -58,6 +60,9 @@ public class Tarea {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
+
+    public Long getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(Long idUsuario) { this.idUsuario = idUsuario; }
 }
 
 

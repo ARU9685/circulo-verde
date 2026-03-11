@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Inventario | Círculo Verde</title>
@@ -103,7 +103,9 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="inventory-title">Inventario del huerto</h2>
-            <button class="btn btn-add">Añadir producto</button>
+
+            <!-- Botón para añadir producto -->
+            <a href="/inventario/nuevo" class="btn btn-add">Añadir producto</a>
         </div>
 
         <p class="text-muted">Controla tus semillas, herramientas y materiales</p>
@@ -122,38 +124,31 @@
                 </thead>
 
                 <tbody>
-                <tr>
-                    <td>Semillas de tomate</td>
-                    <td>Semillas</td>
-                    <td>20 unidades</td>
-                    <td><span class="badge bg-success">Disponible</span></td>
+
+                <!-- FILAS -->
+                <tr th:each="p : ${productos}">
+                    <td th:text="${p.nombre}"></td>
+                    <td th:text="${p.categoria}"></td>
+                    <td th:text="${p.cantidad}"></td>
+
                     <td>
-                        <button class="btn btn-sm btn-outline-primary">Editar</button>
-                        <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                        <span th:classappend="${p.estado == 'Disponible'} ? 'badge bg-success' :
+                     (p.estado == 'Bajo' ? 'badge bg-warning text-dark' : 'badge bg-secondary')"
+                              th:text="${p.estado}"></span>
+
+                    </td>
+
+                    <td>
+                        <a th:href="@{'/inventario/editar/' + ${p.id}}" class="btn btn-sm btn-outline-primary">Editar</a>
+                        <a th:href="@{'/inventario/eliminar/' + ${p.id}}" class="btn btn-sm btn-outline-danger">Eliminar</a>
                     </td>
                 </tr>
 
-                <tr>
-                    <td>Abono orgánico</td>
-                    <td>Fertilizante</td>
-                    <td>5 kg</td>
-                    <td><span class="badge bg-warning text-dark">Bajo</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary">Editar</button>
-                        <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-                    </td>
+                <!-- MENSAJE SI NO HAY PRODUCTOS -->
+                <tr th:if="${productos.size() == 0}">
+                    <td colspan="5" class="text-center text-muted">No tienes productos en tu inventario.</td>
                 </tr>
 
-                <tr>
-                    <td>Guantes de jardinería</td>
-                    <td>Herramientas</td>
-                    <td>1 par</td>
-                    <td><span class="badge bg-success">Disponible</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary">Editar</button>
-                        <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-                    </td>
-                </tr>
                 </tbody>
             </table>
         </div>

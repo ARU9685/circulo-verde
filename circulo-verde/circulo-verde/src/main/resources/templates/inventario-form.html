@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventario - Añadir / Editar</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    .form-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 25px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .btn-save {
+        background-color: #4CAF50;
+        color: white;
+    }
+    .btn-save:hover {
+        background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="form-container">
+
+    <h2 class="mb-3 text-center" th:text="${producto.id} != null ? 'Editar producto' : 'Añadir producto'"></h2>
+
+    <form th:action="@{/inventario/guardar}" th:object="${producto}" method="post">
+
+      <!-- ID oculto para edición -->
+      <input type="hidden" th:field="*{id}">
+
+      <!-- Nombre -->
+      <div class="mb-3">
+        <label class="form-label">Nombre del producto</label>
+        <input type="text" class="form-control" th:field="*{nombre}" required>
+      </div>
+
+      <!-- Categoría -->
+      <div class="mb-3">
+        <label class="form-label">Categoría</label>
+        <select class="form-select" th:field="*{categoria}" required>
+          <option value="">Selecciona una categoría</option>
+          <option value="Semillas">Semillas</option>
+          <option value="Fertilizante">Fertilizante</option>
+          <option value="Herramientas">Herramientas</option>
+          <option value="Macetas">Macetas</option>
+          <option value="Riego">Riego</option>
+          <option value="Otros">Otros</option>
+        </select>
+
+      </div>
+
+      <!-- Cantidad -->
+      <div class="mb-3">
+        <label class="form-label">Cantidad</label>
+        <input type="text" class="form-control" th:field="*{cantidad}" required>
+      </div>
+
+      <!-- Estado -->
+      <div class="mb-3">
+        <label class="form-label">Estado</label>
+        <select class="form-select" th:field="*{estado}" required>
+          <option value="">Selecciona un estado</option>
+          <option value="Disponible">Disponible</option>
+          <option value="Bajo">Bajo</option>
+          <option value="Agotado">Agotado</option>
+        </select>
+      </div>
+
+      <!-- Botones -->
+      <div class="d-flex justify-content-between mt-4">
+        <a href="/inventario" class="btn btn-secondary">Volver</a>
+        <button type="submit" class="btn btn-save">Guardar</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+</body>
+</html>

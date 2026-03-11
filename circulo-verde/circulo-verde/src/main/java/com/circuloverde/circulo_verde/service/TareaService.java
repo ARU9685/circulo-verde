@@ -11,6 +11,7 @@ public class TareaService {
 
     private final TareaRepository tareaRepository;
 
+
     public TareaService(TareaRepository tareaRepository) {
         this.tareaRepository = tareaRepository;
     }
@@ -29,6 +30,10 @@ public class TareaService {
     public List<Tarea> obtenerTareasDelMes(int año, int mes) {
         String añoMes = String.format("%04d-%02d", año, mes);
         return tareaRepository.findByFechaStartingWith(añoMes);
+    }
+
+    public Tarea obtenerProximaTarea(Long usuarioId) {
+        return tareaRepository.findFirstByIdUsuarioOrderByFechaAsc(usuarioId);
     }
 }
 

@@ -37,6 +37,8 @@ public class TareaController {
             return "redirect:/huerto-login";
         }
 
+        tarea.setIdUsuario(usuario.getId());
+
         tareaService.guardar(tarea);
         return "redirect:/calendario";
     }

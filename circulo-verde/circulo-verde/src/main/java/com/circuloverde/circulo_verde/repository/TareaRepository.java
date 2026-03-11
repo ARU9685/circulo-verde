@@ -8,5 +8,10 @@ import java.util.List;
 public interface TareaRepository extends JpaRepository<Tarea, Long> {
 
     List<Tarea> findByFechaStartingWith(String añoMes);
+
+    Tarea findFirstByIdUsuarioOrderByFechaAsc(Long idUsuario);
+
+    List<Tarea> findByIdUsuarioOrderByFechaAsc(Long idUsuario);
+
 }
 
