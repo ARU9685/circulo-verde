@@ -1,42 +1,31 @@
 package com.circuloverde.circulo_verde.controller;
 
 import com.circuloverde.circulo_verde.model.Usuario;
-import com.circuloverde.circulo_verde.repository.UsuarioRepository;
+import com.circuloverde.circulo_verde.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HuertoLoginController {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
 
-    public HuertoLoginController(UsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
+    public HuertoLoginController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
-    @GetMapping("/huerto-login")
-    public String mostrarLogin() {
-        return "huerto-login";
-    }
-
-    @PostMapping("/huerto-login")
-    public String procesarLogin(@RequestParam String nombre,
-                                @RequestParam String contrasenia,
-                                HttpSession session,
-                                Model model) {
-
-        Usuario usuario = usuarioRepository.findByNombre(nombre);
-
-        if (usuario == null || usuario.getContrasenia() == null ||
-                !usuario.getContrasenia().equals(contrasenia)) {
-            model.addAttribute("error", "Nombre o contraseña incorrectos");
-            return "/huerto-login";
+    /**
+     * Tras el login de Spring Security, carga el Usuario de BD en sesión
+     * para que los controllers puedan acceder a sus datos (ciudad, zona...).
+     */
+    @GetMapping("/post-login")
+    public String postLogin(Authentication auth, HttpSession session) {
+        if (auth != null && auth.isAuthenticated()) {
+            Usuario usuario = usuarioService.buscarPorNombre(auth.getName());
+            session.setAttribute("usuarioHuerto", usuario);
         }
-
-        session.setAttribute("usuarioHuerto", usuario);
-
         return "redirect:/panel";
     }
 }

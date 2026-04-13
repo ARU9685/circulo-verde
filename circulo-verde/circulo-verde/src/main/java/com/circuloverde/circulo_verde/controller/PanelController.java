@@ -1,119 +1,99 @@
 package com.circuloverde.circulo_verde.controller;
 
-import com.circuloverde.circulo_verde.service.WeatherService;
-import com.circuloverde.circulo_verde.model.Usuario;
-import com.circuloverde.circulo_verde.repository.UsuarioRepository;
-import com.circuloverde.circulo_verde.service.RecomendacionesService;
-import com.circuloverde.circulo_verde.service.CalendarioSiembraService;
-import com.circuloverde.circulo_verde.service.DiarioService;
-import com.circuloverde.circulo_verde.service.SativumService;
-import  com.circuloverde.circulo_verde.service.TareaService;
-import  com.circuloverde.circulo_verde.service.InventarioService;
 import com.circuloverde.circulo_verde.model.Tarea;
+import com.circuloverde.circulo_verde.model.Usuario;
+import com.circuloverde.circulo_verde.service.*;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import java.util.Map;
-
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class PanelController {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
     private final WeatherService weatherService;
     private final RecomendacionesService recomendacionesService;
     private final CalendarioSiembraService calendarioSiembraService;
-    private final SativumService sativumService;
     private final DiarioService diarioService;
     private final TareaService tareaService;
     private final InventarioService inventarioService;
 
-    public PanelController(UsuarioRepository usuarioRepository,
+    public PanelController(UsuarioService usuarioService,
                            WeatherService weatherService,
                            RecomendacionesService recomendacionesService,
                            CalendarioSiembraService calendarioSiembraService,
-                           SativumService sativumService, DiarioService diarioService, TareaService tareaService,
+                           DiarioService diarioService,
+                           TareaService tareaService,
                            InventarioService inventarioService) {
-        this.usuarioRepository = usuarioRepository;
+        this.usuarioService = usuarioService;
         this.weatherService = weatherService;
         this.recomendacionesService = recomendacionesService;
         this.calendarioSiembraService = calendarioSiembraService;
-        this.sativumService = sativumService;
         this.diarioService = diarioService;
         this.tareaService = tareaService;
         this.inventarioService = inventarioService;
     }
 
     @GetMapping("/panel")
-    public String mostrarPanel(HttpSession session, Model model) {
+    public String mostrarPanel(Authentication auth, HttpSession session, Model model) {
 
+        // Asegurar que el usuario está en sesión (por si accede directamente sin pasar por /post-login)
         Usuario usuario = (Usuario) session.getAttribute("usuarioHuerto");
-        if (usuario == null) {
-            return "redirect:/huerto-login";
+        if (usuario == null && auth != null) {
+            usuario = usuarioService.buscarPorNombre(auth.getName());
+            session.setAttribute("usuarioHuerto", usuario);
         }
+        if (usuario == null) return "redirect:/login";
 
         String ciudad = usuario.getCiudad();
-        String zona = usuario.getZonaClimatica();
+        String zona   = usuario.getZonaClimatica();
 
-        // CLIMA
+        // Clima
         Map<String, String> tiempo = weatherService.obtenerTiempo(ciudad);
         model.addAttribute("tiempoTexto", tiempo.get("texto"));
         model.addAttribute("tiempoIcono", tiempo.get("icono"));
-
-        // Simulación de clima agrícola usando datos disponibles
         model.addAttribute("climaAgricola", Map.of(
                 "current", Map.of(
-                        "temp", tiempo.get("temperatura"),
-                        "humidity", tiempo.get("humedad"),
+                        "temp",       tiempo.get("temperatura"),
+                        "humidity",   tiempo.get("humedad"),
                         "wind_speed", tiempo.get("viento"),
-                        "uvi", "N/D" // No disponible sin OneCall
+                        "uvi",        "N/D"
                 )
         ));
 
-        // datos del USUARIO
+        // Datos del usuario
         model.addAttribute("nombre", usuario.getNombre());
-        model.addAttribute("ciudad", usuario.getCiudad());
-        model.addAttribute("zona", usuario.getZonaClimatica());
+        model.addAttribute("ciudad", ciudad);
+        model.addAttribute("zona",   zona);
 
-
-        // 2. COORDENADAS PARA SATIVUM //
-
+        // Pronóstico (para el panel de 5 días)
         double[] coords = weatherService.obtenerCoordenadas(ciudad);
-        double lat = coords[0];
-        double lon = coords[1];
-
-        JsonNode pronostico = weatherService.obtenerPronostico(lat, lon);
+        JsonNode pronostico = weatherService.obtenerPronostico(coords[0], coords[1]);
         model.addAttribute("pronostico", pronostico);
 
+        // Próxima tarea
         Tarea proxima = tareaService.obtenerProximaTarea(usuario.getId());
         model.addAttribute("tareas", proxima != null ? List.of(proxima) : List.of());
 
-        int productos = inventarioService.contarProductos(usuario.getId());
-        model.addAttribute("productos", productos);
+        // Contadores
+        model.addAttribute("productos",     inventarioService.contarProductos(usuario.getId()));
+        model.addAttribute("entradasDiario", diarioService.contarEntradas(usuario.getId()));
 
-        int entradasDiario = diarioService.contarEntradas(usuario.getId());
-        model.addAttribute("entradasDiario", entradasDiario);
-
+        // Consejos y cultivos por zona
+        model.addAttribute("cultivos",    recomendacionesService.obtenerCultivos(zona));
+        model.addAttribute("consejoZona", recomendacionesService.obtenerConsejo(zona));
         model.addAttribute("consejo",
-                "Hoy en " + usuario.getCiudad() + " (" + usuario.getZonaClimatica() + "):" + recomendacionesService.obtenerConsejo(zona));
+                "Hoy en " + ciudad + " (" + zona + "): " + recomendacionesService.obtenerConsejo(zona));
 
-        //consejo según zona
-        List<String> cultivos = recomendacionesService.obtenerCultivos(zona);
-        String consejoZona = recomendacionesService.obtenerConsejo(zona);
+        // Siembras del mes actual
+        model.addAttribute("siembrasMes", calendarioSiembraService.obtenerSiembrasDelMes(zona));
 
-        model.addAttribute("cultivos", cultivos);
-        model.addAttribute("consejoZona", consejoZona);
-
-        List<String> siembrasMes = calendarioSiembraService.obtenerSiembrasDelMes(zona);
-        model.addAttribute("siembrasMes", siembrasMes);
-
-
-        return "/panel";
+        return "panel";
     }
 }
-

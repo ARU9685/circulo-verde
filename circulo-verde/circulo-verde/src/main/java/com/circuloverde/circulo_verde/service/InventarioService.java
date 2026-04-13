@@ -27,13 +27,20 @@ public class InventarioService {
         inventarioRepository.save(producto);
     }
 
-    public void eliminarProducto(Long id) {
-        inventarioRepository.deleteById(id);
+    public void eliminarProducto(Long id, Long usuarioId) {
+        ProductoInventario p = inventarioRepository.findById(id).orElse(null);
+        if (p != null && p.getIdUsuario().equals(usuarioId)) {
+            inventarioRepository.deleteById(id);
+        }
     }
 
     public ProductoInventario buscarPorId(Long id) {
         return inventarioRepository.findById(id).orElse(null);
     }
 
+    public boolean perteneceAlUsuario(Long productoId, Long usuarioId) {
+        ProductoInventario p = inventarioRepository.findById(productoId).orElse(null);
+        return p != null && p.getIdUsuario().equals(usuarioId);
+    }
 }
 

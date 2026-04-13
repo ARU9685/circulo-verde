@@ -1,85 +1,143 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Registro - Círculo Verde</title>
-
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <title>Registro | Círculo Verde</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #A5D6A7, #66BB6A);
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            background: linear-gradient(135deg, #A5D6A7, #2E7D32);
             font-family: "Segoe UI", sans-serif;
         }
-
-        .card {
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            animation: fadeIn 0.6s ease-out;
+        .registro-card {
+            background: white;
+            padding: 2rem;
+            width: 440px;
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            animation: fadeIn 0.5s ease-out;
         }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            to   { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-
 <body>
+<div class="registro-card">
+    <h3 class="text-center fw-bold mb-4" style="color:#2E7D32;">🌱 Crear cuenta</h3>
 
-<div class="card p-4" style="width: 420px;">
-
-    <h3 class="text-center mb-3 text-success fw-bold">Registro en Círculo Verde</h3>
-
-    <div th:if="${param.exito}" class="alert alert-success text-center">
-        ¡Registro completado!
-    </div>
+    <div th:if="${errorGeneral}" class="alert alert-danger text-center py-2"
+         th:text="${errorGeneral}"></div>
 
     <form th:action="@{/registro}" th:object="${usuario}" method="post">
 
         <div class="mb-3">
-            <label class="form-label">Nombre</label>
-            <input type="text" class="form-control" th:field="*{nombre}">
-            <div class="text-danger small" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+            <label class="form-label fw-semibold">Nombre de usuario *</label>
+            <input type="text" class="form-control" th:field="*{nombre}"
+                   placeholder="p.ej. MariaHuerto" required>
+            <div class="text-danger small mt-1"
+                 th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" th:field="*{email}">
-            <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            <label class="form-label fw-semibold">Contraseña *</label>
+            <input type="password" class="form-control" th:field="*{contrasenia}"
+                   placeholder="Mínimo 4 caracteres" required>
+            <div class="text-danger small mt-1"
+                 th:if="${#fields.hasErrors('contrasenia')}" th:errors="*{contrasenia}"></div>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Contraseña</label>
-            <input type="password" class="form-control" th:field="*{contrasenia}">
-            <div class="text-danger small" th:if="${#fields.hasErrors('contrasenia')}" th:errors="*{contrasenia}"></div>
+            <label class="form-label fw-semibold">Email <span class="text-muted fw-normal">(opcional)</span></label>
+            <input type="email" class="form-control" th:field="*{email}"
+                   placeholder="correo@ejemplo.com">
+            <div class="text-danger small mt-1"
+                 th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Ciudad</label>
-            <select class="form-select" th:field="*{ciudad}">
-                <option value="">Selecciona una ciudad</option>
-                <option value="Madrid">Madrid</option>
-                <option value="Barcelona">Barcelona</option>
-                <option value="Valencia">Valencia</option>
-                <option value="Sevilla">Sevilla</option>
-                <option value="Bilbao">Bilbao</option>
-                <option value="Zaragoza">Zaragoza</option>
-                <option value="Málaga">Málaga</option>
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Ciudad *</label>
+            <select class="form-select" th:field="*{ciudad}" required>
+                <option value="">-- Selecciona tu ciudad --</option>
+                <optgroup label="🌞 Mediterránea">
+                    <option value="Valencia">Valencia</option>
+                    <option value="Alicante">Alicante</option>
+                    <option value="Murcia">Murcia</option>
+                    <option value="Sevilla">Sevilla</option>
+                    <option value="Málaga">Málaga</option>
+                    <option value="Barcelona">Barcelona</option>
+                    <option value="Almería">Almería</option>
+                    <option value="Cádiz">Cádiz</option>
+                    <option value="Palma de Mallorca">Palma de Mallorca</option>
+                    <option value="Cartagena">Cartagena</option>
+                    <option value="Elche">Elche</option>
+                    <option value="Marbella">Marbella</option>
+                    <option value="Castellón">Castellón</option>
+                    <option value="Tarragona">Tarragona</option>
+                    <option value="Girona">Girona</option>
+                    <option value="Huelva">Huelva</option>
+                    <option value="Granada">Granada</option>
+                    <option value="Ibiza">Ibiza</option>
+                    <option value="Torrevieja">Torrevieja</option>
+                </optgroup>
+                <optgroup label="❄️ Continental">
+                    <option value="Madrid">Madrid</option>
+                    <option value="Zaragoza">Zaragoza</option>
+                    <option value="Toledo">Toledo</option>
+                    <option value="Valladolid">Valladolid</option>
+                    <option value="Burgos">Burgos</option>
+                    <option value="Salamanca">Salamanca</option>
+                    <option value="Albacete">Albacete</option>
+                    <option value="Guadalajara">Guadalajara</option>
+                    <option value="Segovia">Segovia</option>
+                    <option value="Ávila">Ávila</option>
+                    <option value="León">León</option>
+                    <option value="Cuenca">Cuenca</option>
+                    <option value="Soria">Soria</option>
+                    <option value="Teruel">Teruel</option>
+                    <option value="Palencia">Palencia</option>
+                </optgroup>
+                <optgroup label="🌧️ Atlántica">
+                    <option value="Bilbao">Bilbao</option>
+                    <option value="Santander">Santander</option>
+                    <option value="A Coruña">A Coruña</option>
+                    <option value="Oviedo">Oviedo</option>
+                    <option value="San Sebastián">San Sebastián</option>
+                    <option value="Vigo">Vigo</option>
+                    <option value="Pamplona">Pamplona</option>
+                    <option value="Gijón">Gijón</option>
+                    <option value="Pontevedra">Pontevedra</option>
+                    <option value="Lugo">Lugo</option>
+                    <option value="Ourense">Ourense</option>
+                    <option value="Vitoria-Gasteiz">Vitoria-Gasteiz</option>
+                </optgroup>
+                <optgroup label="🌴 Subtropical">
+                    <option value="Las Palmas">Las Palmas</option>
+                    <option value="Santa Cruz de Tenerife">Santa Cruz de Tenerife</option>
+                    <option value="Arrecife">Arrecife</option>
+                    <option value="San Cristóbal de la Laguna">San Cristóbal de la Laguna</option>
+                    <option value="Telde">Telde</option>
+                    <option value="Arona">Arona</option>
+                </optgroup>
             </select>
         </div>
 
-        <button type="submit" class="btn btn-warning w-100 fw-bold">Registrarse</button>
-
+        <button type="submit" class="btn btn-success w-100 py-2 fw-semibold fs-5">
+            Registrarme
+        </button>
     </form>
 
+    <p class="text-center mt-3 small">
+        ¿Ya tienes cuenta? <a href="/login" class="fw-semibold text-success">Inicia sesión</a>
+    </p>
 </div>
-
 </body>
 </html>
+
 

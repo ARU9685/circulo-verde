@@ -21,54 +21,54 @@ public class InventarioController {
 
     @GetMapping("/inventario")
     public String mostrarInventario(HttpSession session, Model model) {
+        Usuario usuario = usuarioEnSesion(session);
+        if (usuario == null) return "redirect:/login";
 
-        Usuario usuario = (Usuario) session.getAttribute("usuarioHuerto");
-        if (usuario == null) return "redirect:/huerto-login";
-
-        List<ProductoInventario> productos =
-                inventarioService.obtenerProductos(usuario.getId());
-
+        List<ProductoInventario> productos = inventarioService.obtenerProductos(usuario.getId());
         model.addAttribute("productos", productos);
-
         return "inventario";
     }
 
     @GetMapping("/inventario/nuevo")
-    public String nuevoProducto(Model model) {
+    public String nuevoProducto(Model model, HttpSession session) {
+        if (usuarioEnSesion(session) == null) return "redirect:/login";
         model.addAttribute("producto", new ProductoInventario());
         return "inventario-form";
     }
 
     @PostMapping("/inventario/guardar")
-    public String guardarProducto(@ModelAttribute ProductoInventario producto,
-                                  HttpSession session) {
-
-        Usuario usuario = (Usuario) session.getAttribute("usuarioHuerto");
-        if (usuario == null) return "redirect:/huerto-login";
+    public String guardarProducto(@ModelAttribute ProductoInventario producto, HttpSession session) {
+        Usuario usuario = usuarioEnSesion(session);
+        if (usuario == null) return "redirect:/login";
 
         producto.setIdUsuario(usuario.getId());
         inventarioService.guardarProducto(producto);
-
         return "redirect:/inventario";
     }
 
     @GetMapping("/inventario/editar/{id}")
     public String editarProducto(@PathVariable Long id, Model model, HttpSession session) {
+        Usuario usuario = usuarioEnSesion(session);
+        if (usuario == null) return "redirect:/login";
 
-        Usuario usuario = (Usuario) session.getAttribute("usuarioHuerto");
-        if (usuario == null) return "redirect:/huerto-login";
-
-        ProductoInventario producto = inventarioService.buscarPorId(id);
-        model.addAttribute("producto", producto);
-
+        if (!inventarioService.perteneceAlUsuario(id, usuario.getId())) {
+            return "redirect:/inventario";
+        }
+        model.addAttribute("producto", inventarioService.buscarPorId(id));
         return "inventario-form";
     }
 
     @GetMapping("/inventario/eliminar/{id}")
-    public String eliminarProducto(@PathVariable Long id) {
-        inventarioService.eliminarProducto(id);
+    public String eliminarProducto(@PathVariable Long id, HttpSession session) {
+        Usuario usuario = usuarioEnSesion(session);
+        if (usuario == null) return "redirect:/login";
+
+        inventarioService.eliminarProducto(id, usuario.getId());
         return "redirect:/inventario";
     }
-}
 
+    private Usuario usuarioEnSesion(HttpSession session) {
+        return (Usuario) session.getAttribute("usuarioHuerto");
+    }
+}
 

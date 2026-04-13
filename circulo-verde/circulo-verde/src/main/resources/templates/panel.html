@@ -4,237 +4,245 @@
     <meta charset="UTF-8">
     <title>Mi huerto | Círculo Verde</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
-        /* Fondo tierra claro */
-        body {
-            background-color: #f2e7d5;
-        }
+        body { background: #eef4ee; font-family: "Segoe UI", sans-serif; }
 
-        /* Navbar verde */
-        .navbar {
-            background-color: #2f5d2f !important;
-        }
+        /* ── Navbar ── */
+        .navbar { background: linear-gradient(90deg,#1a3d1a,#2f6b2f) !important; }
+        .navbar .navbar-brand, .navbar .nav-link { color: #fff !important; }
 
-        .navbar .navbar-brand,
-        .navbar .nav-link {
-            color: #ffffff !important;
+        /* ── Saludo hero ── */
+        .hero {
+            background: linear-gradient(135deg,#2f6b2f,#4a9e4a);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: "🌿";
+            position: absolute;
+            font-size: 8rem;
+            right: 1rem;
+            top: -1rem;
+            opacity: .15;
+        }
+        .hero h2 { font-size: 1.8rem; font-weight: 700; margin: 0; }
+        .hero p  { margin: .3rem 0 0; opacity: .9; }
+
+        /* ── Cards ── */
+        .cv-card {
+            background: white;
+            border-radius: 14px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,.07);
+            height: 100%;
+            transition: transform .2s, box-shadow .2s;
+        }
+        .cv-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.11); }
+        .cv-card-title { font-weight: 700; color: #1f5c1f; margin-bottom: .8rem; font-size: 1rem; }
+
+        /* ── Clima ── */
+        .clima-temp { font-size: 2.5rem; font-weight: 800; color: #2f6b2f; line-height: 1; }
+        .clima-meta { font-size: .85rem; color: #666; }
+
+        /* ── Tarjetas de contadores ── */
+        .counter-card {
+            border-radius: 14px;
+            padding: 1.2rem 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .counter-card .num  { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+        .counter-card .lbl  { font-size: .85rem; opacity: .9; }
+        .counter-card .icon { font-size: 2.2rem; opacity: .7; }
+
+        /* ── Badges cultivos ── */
+        .cultivo-badge {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: .88rem;
+            margin: 3px;
             font-weight: 500;
         }
-        .btn-add {
-            background-color: #2f5d2f;
-            color: white;
-        }
 
-        .navbar .nav-link:hover {
-            color: #c8f7c5 !important;
-        }
-
-        /* Tarjetas del panel */
-        .panel-card {
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 0 10px rgba(0,0,0,0.08);
-            height: 100%;
-        }
-
-        .panel-title {
-            font-weight: 600;
-            color: #2f5d2f;
-        }
-
-        .weather-icon {
-            width: 60px;
+        /* ── Consejo ── */
+        .consejo-box {
+            background: linear-gradient(135deg,#f0f9f0,#e8f5e8);
+            border-left: 4px solid #2f6b2f;
+            border-radius: 10px;
+            padding: 1rem 1.3rem;
         }
     </style>
 </head>
-
 <body>
 
-<!-- NAVBAR SUPERIOR -->
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="/inicio">
-            <img src="../img/LogoCirculoVerde.jpeg" alt="Logo" class="me-2" style="height:60px;">
-            Círculo Verde</a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCV">
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg shadow-sm" style="background:linear-gradient(90deg,#1a3d1a,#2f6b2f);">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/panel">
+            <img th:src="@{/img/LogoCirculoVerde.jpeg}" alt="Logo"
+                 style="height:38px;border-radius:50%;border:2px solid #a8d5a2;">
+            <span class="text-white" style="letter-spacing:.5px;">Círculo Verde</span>
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
             <span class="navbar-toggler-icon"></span>
         </button>
-
-        <div class="collapse navbar-collapse" id="navbarCV">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/panel">Mi huerto</a>
-                </li>
-
+        <div class="collapse navbar-collapse" id="navMain">
+            <ul class="navbar-nav me-auto ms-3">
+                <li class="nav-item"><a class="nav-link text-white fw-medium" href="/panel"> Mi huerto</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="menuGestion" role="button" data-bs-toggle="dropdown">
-                        Gestión
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/calendario">Calendario</a></li>
-                        <li><a class="dropdown-item" href="/inventario">Inventario</a></li>
-                        <li><a class="dropdown-item" href="/diario">Diario</a></li>
-                        <li><a class="dropdown-item" href="/estadisticas">Estadísticas</a></li>
+                    <a class="nav-link dropdown-toggle text-white fw-medium" href="#" data-bs-toggle="dropdown">🌿 Gestión</a>
+                    <ul class="dropdown-menu border-0 shadow-sm" style="border-radius:10px;">
+                        <li><a class="dropdown-item py-2" href="/calendario"> Calendario</a></li>
+                        <li><a class="dropdown-item py-2" href="/inventario"> Inventario</a></li>
+                        <li><a class="dropdown-item py-2" href="/diario"> Diario</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2" href="/estadisticas"> Estadísticas</a></li>
                     </ul>
                 </li>
-
             </ul>
-
-            <form class="d-flex me-3" action="/buscar" method="get">
-                <input class="form-control me-2" type="search" name="q" placeholder="Buscar..." aria-label="Buscar">
-                <button class="btn btn-light" type="submit">Buscar</button>
-            </form>
-
-            <a href="/logout" class="btn btn-danger">Salir</a>
+            <a href="/logout" class="btn btn-sm fw-semibold text-white"
+               style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:6px 18px;">
+                Salir →</a>
         </div>
     </div>
 </nav>
 
-<!-- CONTENIDO PRINCIPAL -->
-<div class="container mt-4">
+<div class="container py-4">
 
-    <!-- Saludo -->
-    <div class="mb-4">
-        <h2 class="fw-bold">Buenos días,<strong th:text="${nombre}"></strong></h2>
-        <p class="text-muted" th:text="${ciudad}"></p>
-        <p class="text-muted"> Zona climática:<strong th:text="${zona}"></strong> </p>
+    <!-- HERO -->
+    <div class="hero">
+        <h2>Hola, <span th:text="${nombre}">Usuario</span> 👋</h2>
+        <p th:text="${ciudad} + ' · Zona ' + ${zona}"></p>
     </div>
 
-    <!-- FILA 1: Tiempo + Calendario -->
-    <div class="row g-4">
+    <!-- FILA 1: Clima + Próxima tarea -->
+    <div class="row g-3 mb-3">
 
-        <!-- Tiempo -->
+        <!-- Clima -->
         <div class="col-md-4">
-            <div class="panel-card text-center">
-                <h5 class="panel-title mb-3">Tiempo actual</h5>
-
-                <img class="weather-icon" th:src="${tiempoIcono}" alt="icono tiempo">
-                <p class="mt-2" th:text="${tiempoTexto}"></p>
-
-                <!-- Clima -->
-                <div class="agro-section" th:if="${climaAgricola != null}">
-                    <h3>Clima</h3>
-                    <p th:if="${climaAgricola['current'] != null}" th:text="'Índice UV: ' + ${climaAgricola['current']['uvi']}"></p>
-                    <p th:if="${climaAgricola['current'] != null}" th:text="'Viento: ' + ${climaAgricola['current']['wind_speed']} + ' m/s'"></p>
-                    <p th:if="${climaAgricola['current'] != null}" th:text="'Humedad: ' + ${climaAgricola['current']['humidity']} + '%'"></p>
-                    <p th:if="${climaAgricola['current'] != null}" th:text="'Temperatura: ' + ${climaAgricola['current']['temp']} + '°C'"></p>
+            <div class="cv-card text-center">
+                <div class="cv-card-title"> Tiempo actual</div>
+                <img th:if="${tiempoIcono != null and !#strings.isEmpty(tiempoIcono)}"
+                     th:src="${tiempoIcono}" alt="clima" style="width:64px;">
+                <div class="clima-temp" th:text="${climaAgricola['current']['temp'] + '°C'}">--</div>
+                <div class="mt-2 d-flex justify-content-center gap-3">
+                    <span class="clima-meta">💧 <span th:text="${climaAgricola['current']['humidity']}">--</span>%</span>
+                    <span class="clima-meta">💨 <span th:text="${climaAgricola['current']['wind_speed']}">--</span> m/s</span>
                 </div>
-
-            </div>
-
-            <p th:if="${climaAgricola == null}" class="text-muted"> No hay datos agrícolas disponibles para esta ubicación. </p>
-
-
-        </div>
-
-        <!-- Calendario -->
-        <div class="col-md-8">
-            <div class="panel-card">
-                <h5 class="panel-title mb-3">Calendario</h5>
-                <p>Próxima tarea:<strong th:text="${tareas.size() > 0 ? tareas[0].titulo : 'No hay tareas próximas'}"></strong>
-                    <span th:if="${tareas.size() > 0}">
-        — <span th:text="${tareas[0].fecha}"></span></span></p>
-                <a href="/calendario" class="btn btn-outline-success mt-2">Ver calendario</a>
+                <p class="text-muted mt-2 small" th:text="${tiempoTexto}"></p>
             </div>
         </div>
 
-    </div>
-
-    <!-- FILA 2: Inventario + Diario + Estadísticas -->
-    <div class="row g-4 mt-1">
-
-        <!-- Inventario -->
+        <!-- Próxima tarea -->
         <div class="col-md-4">
-            <div class="panel-card">
-                <h5 class="panel-title mb-3">Inventario</h5>
-                <p>Tienes <strong>4</strong> productos</p>
-                <a href="/inventario" class="btn btn-outline-success">Ver inventario</a>
+            <div class="cv-card">
+                <div class="cv-card-title">📌 Próxima tarea</div>
+                <div th:if="${tareas.size() > 0}">
+                    <p class="fw-semibold fs-5 mb-1" th:text="${tareas[0].titulo}"></p>
+                    <span class="badge rounded-pill px-3 py-2"
+                          th:classappend="${tareas[0].tipo == 'riego'     ? 'bg-primary'           :
+                                           tareas[0].tipo == 'siembra'   ? 'bg-success'           :
+                                           tareas[0].tipo == 'abonado'   ? 'bg-warning text-dark' :
+                                                                           'bg-secondary'}"
+                          th:text="${tareas[0].tipo}"></span>
+                    <p class="text-muted small mt-2">📅 <span th:text="${tareas[0].fecha}"></span></p>
+                </div>
+                <div th:if="${tareas.isEmpty()}" class="text-muted fst-italic">
+                    No hay tareas pendientes 🎉
+                </div>
+                <a href="/calendario" class="btn btn-outline-success btn-sm mt-2">Ver calendario</a>
             </div>
         </div>
 
-        <!-- Diario -->
+        <!-- Acceso rápido -->
         <div class="col-md-4">
-            <div class="panel-card">
-                <h5 class="panel-title mb-3">Diario</h5>
-                <p><strong>5</strong> entradas registradas</p>
-                <a href="/diario" class="btn btn-outline-success">Ver diario</a>
+            <div class="cv-card">
+                <div class="cv-card-title">⚡ Acceso rápido</div>
+                <div class="d-grid gap-2">
+                    <a href="/tarea-nueva"    class="btn btn-success btn-sm">➕ Nueva tarea</a>
+                    <a href="/inventario/nuevo" class="btn btn-outline-success btn-sm"> Añadir producto</a>
+                    <a href="/diario/nueva"   class="btn btn-outline-success btn-sm"> Nueva entrada diario</a>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Estadísticas -->
+    <!-- FILA 2: Contadores -->
+    <div class="row g-3 mb-3">
         <div class="col-md-4">
-            <div class="panel-card">
-                <h5 class="panel-title mb-3">Estadísticas</h5>
-                <p>Progreso mensual: <strong>75%</strong></p>
-                <a href="/estadisticas" class="btn btn-outline-success">Ver estadísticas</a>
+            <div class="counter-card" style="background:linear-gradient(135deg,#388e3c,#66bb6a);">
+                <div class="icon"></div>
+                <div>
+                    <div class="num" th:text="${productos}">0</div>
+                    <div class="lbl">Productos en inventario</div>
+                </div>
+                <a href="/inventario" class="ms-auto btn btn-sm text-white" style="background:rgba(255,255,255,.2);">Ver →</a>
             </div>
         </div>
-
-    </div>
-
-    <!-- Recomendación del día -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="panel-card">
-                <h5 class="panel-title mb-2">Recomendación del día</h5>
-                <p>Hoy en zona Mediterránea: ideal para sembrar lechugas</p>
+        <div class="col-md-4">
+            <div class="counter-card" style="background:linear-gradient(135deg,#5d4037,#8d6e63);">
+                <div class="icon">📓</div>
+                <div>
+                    <div class="num" th:text="${entradasDiario}">0</div>
+                    <div class="lbl">Entradas en el diario</div>
+                </div>
+                <a href="/diario" class="ms-auto btn btn-sm text-white" style="background:rgba(255,255,255,.2);">Ver →</a>
             </div>
         </div>
-
-    </div>
-    <!-- Cultivos recomendados según zona -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="panel-card">
-                <h5 class="panel-title mb-2">Cultivos recomendados para tu zona</h5>
-
-                <ul>
-                    <li th:each="c : ${cultivos}" th:text="${c}"></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Consejo según zona -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="panel-card">
-                <h5 class="panel-title mb-2">Consejo para tu zona</h5>
-                <p th:text="${consejoZona}"></p>
+        <div class="col-md-4">
+            <div class="counter-card" style="background:linear-gradient(135deg,#1565c0,#42a5f5);">
+                <div class="icon"></div>
+                <div>
+                    <div class="num">→</div>
+                    <div class="lbl">Ver mis estadísticas</div>
+                </div>
+                <a href="/estadisticas" class="ms-auto btn btn-sm text-white" style="background:rgba(255,255,255,.2);">Ver →</a>
             </div>
         </div>
     </div>
 
-    <!-- Calendario de siembra según zona -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="panel-card">
-                <h5 class="panel-title mb-2">Qué sembrar este mes en tu zona</h5>
+    <!-- FILA 3: Consejo + Cultivos de la zona -->
+    <div class="row g-3">
 
-                <ul>
-                    <li th:each="s : ${siembrasMes}" th:text="${s}"></li>
-                </ul>
+        <!-- Consejo -->
+        <div class="col-md-5">
+            <div class="cv-card">
+                <div class="cv-card-title">💡 Consejo para tu zona</div>
+                <div class="consejo-box">
+                    <p class="mb-0" th:text="${consejoZona}"></p>
+                </div>
+                <p class="text-muted small mt-2">Zona: <strong th:text="${zona}"></strong></p>
+            </div>
+        </div>
 
-                <p th:if="${siembrasMes.size() == 0}">
-                    No hay siembras recomendadas para este mes.
+        <!-- Cultivos recomendados -->
+        <div class="col-md-7">
+            <div class="cv-card">
+                <div class="cv-card-title">🌱 Cultivos recomendados para tu zona</div>
+                <div th:if="${cultivos != null and !cultivos.isEmpty()}">
+                    <span th:each="c : ${cultivos}" class="cultivo-badge" th:text="${c}"></span>
+                </div>
+                <p class="text-muted small mt-3 mb-0">
+                    Para ver qué sembrar <strong>este mes</strong>, visita el
+                    <a href="/calendario" class="text-success fw-semibold">Calendario </a>
                 </p>
             </div>
         </div>
     </div>
 
-
 </div>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
-

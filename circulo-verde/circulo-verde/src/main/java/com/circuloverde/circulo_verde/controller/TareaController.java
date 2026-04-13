@@ -1,8 +1,8 @@
 package com.circuloverde.circulo_verde.controller;
 
 import com.circuloverde.circulo_verde.model.Tarea;
-import com.circuloverde.circulo_verde.service.TareaService;
 import com.circuloverde.circulo_verde.model.Usuario;
+import com.circuloverde.circulo_verde.service.TareaService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,57 +17,47 @@ public class TareaController {
         this.tareaService = tareaService;
     }
 
-    // Mostrar formulario de nueva tarea
     @GetMapping("/tarea-nueva")
     public String nuevaTarea(Model model, HttpSession session) {
-
-        Usuario usuario = (Usuario) session.getAttribute("usuarioHuerto");
-        if (usuario == null) { return "redirect:/huerto-login";
-        }
+        if (usuarioEnSesion(session) == null) return "redirect:/login";
         model.addAttribute("tarea", new Tarea());
         return "tarea-form";
     }
 
-    // Guardar tarea
     @PostMapping("/tarea-guardar")
-    public String guardarTarea(@ModelAttribute Tarea tarea,  HttpSession session) {
-
-        Usuario usuario = (Usuario) session.getAttribute("usuarioHuerto");
-        if (usuario == null) {
-            return "redirect:/huerto-login";
-        }
-
+    public String guardarTarea(@ModelAttribute Tarea tarea, HttpSession session) {
+        Usuario usuario = usuarioEnSesion(session);
+        if (usuario == null) return "redirect:/login";
         tarea.setIdUsuario(usuario.getId());
-
         tareaService.guardar(tarea);
         return "redirect:/calendario";
     }
 
-    // Editar tarea
     @GetMapping("/tarea-editar/{id}")
-    public String editarTarea(@PathVariable Long id, Model model,  HttpSession session) {
+    public String editarTarea(@PathVariable Long id, Model model, HttpSession session) {
+        Usuario usuario = usuarioEnSesion(session);
+        if (usuario == null) return "redirect:/login";
 
-        Usuario usuario = (Usuario) session.getAttribute("usuarioHuerto");
-        if (usuario == null) {
-            return "redirect:/huerto-login";
+        if (!tareaService.perteneceAlUsuario(id, usuario.getId())) {
+            return "redirect:/calendario";
         }
-
-        Tarea tarea = tareaService.buscarPorId(id);
-        model.addAttribute("tarea", tarea);
+        model.addAttribute("tarea", tareaService.buscarPorId(id));
         return "tarea-form";
     }
 
-    // Eliminar tarea
     @GetMapping("/tarea-eliminar/{id}")
-    public String eliminarTarea(@PathVariable Long id,  HttpSession session) {
+    public String eliminarTarea(@PathVariable Long id, HttpSession session) {
+        Usuario usuario = usuarioEnSesion(session);
+        if (usuario == null) return "redirect:/login";
 
-        Usuario usuario = (Usuario) session.getAttribute("usuarioHuerto");
-        if (usuario == null) {
-            return "redirect:/huerto-login";
+        if (tareaService.perteneceAlUsuario(id, usuario.getId())) {
+            tareaService.eliminar(id);
         }
-
-        tareaService.eliminar(id);
         return "redirect:/calendario";
+    }
+
+    private Usuario usuarioEnSesion(HttpSession session) {
+        return (Usuario) session.getAttribute("usuarioHuerto");
     }
 }
 

@@ -1,155 +1,78 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Inicio | Círculo Verde</title>
+    <title>Bienvenido | Círculo Verde</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
-        /* Fondo tierra claro */
         body {
-        background-color: #f3e9d7;
-        /* beige suave tipo tierra */
+            min-height: 100vh;
+            background: linear-gradient(135deg,#1a3d1a 0%,#2f6b2f 50%,#4a9e4a 100%);
+            display: flex; flex-direction: column;
+            font-family: "Segoe UI", sans-serif;
         }
-        /* Navbar verde */
-        .navbar {
-        background-color: #3b6e3b !important; /* verde natural */
+        .welcome-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,.3);
+            text-align: center;
+            animation: fadeUp .7s ease-out;
+            max-width: 480px;
+            width: 100%;
         }
-        .navbar .nav-link, .navbar .navbar-brand {
-        color: white !important;
-        font-weight: 500;
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(30px); }
+            to   { opacity:1; transform:translateY(0); }
         }
-        .btn-add {
-            background-color: #2f5d2f;
-            color: white;
+        .logo-circle {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            border: 4px solid #2f6b2f;
+            object-fit: cover;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,.15);
         }
-        .navbar .nav-link:hover {
-        color: #d4ffd4 !important;
+        .app-title { color:#1f5c1f; font-weight:800; font-size:2rem; margin-bottom:.3rem; }
+        .app-sub   { color:#666; margin-bottom:2rem; }
+        .btn-main {
+            background: linear-gradient(135deg,#2f6b2f,#4a9e4a);
+            color: white; border:none; border-radius:25px;
+            padding:.75rem 2rem; font-size:1rem; font-weight:600;
+            transition:.2s; text-decoration:none; display:inline-block;
         }
-        /* Caja de bienvenida */
-        .welcome-box {
-        background-color: white;
-        border-radius: 12px;
-        padding: 2rem;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        text-align: center;
+        .btn-main:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(47,107,47,.4); color:white; }
+        .btn-sec {
+            border:2px solid #2f6b2f; color:#2f6b2f; border-radius:25px;
+            padding:.75rem 2rem; font-size:1rem; font-weight:600;
+            transition:.2s; text-decoration:none; display:inline-block;
         }
-        .welcome-icon {
-        font-size: 3rem;
-        color: #3b6e3b;
-        }
-        .welcome-buttons .btn {
-        margin: 0.5rem;
-        }
-        .animacion-inicio {
-        opacity: 0;
-        transform: translateY(20px);
-        animation: aparecer 0.8s ease-out forwards;
-        }
-        @keyframes aparecer {
-           to {
-               opacity: 1;
-               transform: translateY(0);
-           }
-        }
-
-       .fondo-bienvenida {
-        position: relative;
-        overflow: hidden;
-        padding: 40px;
-        border-radius: 20px;
-        background: #e8ffe8;
-        }
-
-       .fondo-bienvenida::before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(0,150,0,0.15) 0%, transparent 70%);
-        animation: moverOndas 8s infinite linear;
-        }
-
-        @keyframes moverOndas {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-        }
+        .btn-sec:hover { background:#2f6b2f; color:white; }
+        .feature { background:#f0f9f0; border-radius:10px; padding:.8rem 1rem; margin:.4rem 0; font-size:.9rem; color:#444; }
     </style>
-
 </head>
+<body class="d-flex align-items-center justify-content-center p-4">
 
-<body>
+<div class="welcome-card">
+    <img th:src="@{/img/LogoCirculoVerde.jpeg}" alt="Logo Círculo Verde" class="logo-circle">
+    <div class="app-title">Círculo Verde</div>
+    <p class="app-sub">Tu huerto urbano inteligente 🌱</p>
 
-<!-- NAVBAR SUPERIOR -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="/inicio">
-            <img src="../img/LogoCirculoVerde.jpeg" alt="Logo" class="me-2" style="height:60px;">
-            Círculo Verde</a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCV">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarCV">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="/panel">Mi huerto</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="menuGestion" role="button" data-bs-toggle="dropdown">
-                        Gestión
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="menuGestion">
-                        <li><a class="dropdown-item" href="/calendario">Calendario</a></li>
-                        <li><a class="dropdown-item" href="/inventario">Inventario</a></li>
-                        <li><a class="dropdown-item" href="/diario">Diario</a></li>
-                        <li><a class="dropdown-item" href="/estadisticas">Estadísticas</a></li>
-                    </ul>
-                </li>
-            </ul>
-
-            <form class="d-flex me-3" action="/buscar" method="get">
-                <input class="form-control me-2" type="search" name="q" placeholder="Buscar..." aria-label="Buscar">
-                <button class="btn btn-outline-success" type="submit">Buscar</button>
-            </form>
-
-            <a href="/logout" class="btn btn-danger">Salir</a>
-        </div>
-    </div>
-</nav>
-
-<!-- CONTENIDO PRINCIPAL -->
-<div class="fondo-bienvenida">
-
-    <div class="container mt-5 animacion-inicio">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-
-                <div class="welcome-box">
-                    <div class="welcome-icon"><img src="../img/LogoCirculoVerde.jpeg" alt="Logo" class="me-2" style="height:100px;">
-                    </div>
-                    <h2 class="fw-bold mt-3">BIENVENID@ A CÍRCULO VERDE</h2>
-                    <p class="text-muted">Cultiva, aprende y conecta con nuestra app diseñada para todo el mundo</p>
-
-                    <div class="welcome-buttons">
-                        <a href="/registro" class="btn btn-warning">Empezar viaje</a>
-                        <a href="/panel" class="btn btn-warning">Entrar al huerto</a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+    <div class="mb-4">
+        <div class="feature"> Calendario de siembras por zona climática</div>
+        <div class="feature"> Gestión de inventario del huerto</div>
+        <div class="feature"> Clima y recomendaciones en tiempo real</div>
+        <div class="feature"> Diario de seguimiento de tu huerto</div>
     </div>
 
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="/login"    class="btn-main">Entrar</a>
+        <a href="/registro" class="btn-sec">Crear cuenta</a>
+    </div>
 </div>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
 

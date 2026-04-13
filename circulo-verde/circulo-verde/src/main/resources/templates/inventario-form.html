@@ -2,90 +2,81 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Inventario - Añadir / Editar</title>
-
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+  <title>Inventario | Círculo Verde</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .form-container {
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 25px;
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .btn-save {
-        background-color: #4CAF50;
-        color: white;
-    }
-    .btn-save:hover {
-        background-color: #45a049;
-    }
+    body { background-color: #f2e7d5; }
+    .navbar { background-color: #2f5d2f !important; }
+    .navbar .navbar-brand, .navbar .nav-link { color: #fff !important; font-weight: 500; }
+    .form-card { background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 0 12px rgba(0,0,0,0.08); }
   </style>
 </head>
-
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="/panel">🌿 Círculo Verde</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="/inventario">Inventario</a></li>
+      </ul>
 
-<div class="container">
-  <div class="form-container">
 
-    <h2 class="mb-3 text-center" th:text="${producto.id} != null ? 'Editar producto' : 'Añadir producto'"></h2>
+
+    </div>
+  </div>
+</nav>
+
+<div class="container" style="max-width: 500px;">
+  <div class="form-card">
+    <h4 class="fw-bold text-success mb-4">
+      <span th:if="${producto.id != null}">✏️ Editar producto</span>
+      <span th:if="${producto.id == null}">➕ Nuevo producto</span>
+    </h4>
 
     <form th:action="@{/inventario/guardar}" th:object="${producto}" method="post">
+      <input type="hidden" th:if="${producto.id != null}" th:field="*{id}">
 
-      <!-- ID oculto para edición -->
-      <input type="hidden" th:field="*{id}">
-
-      <!-- Nombre -->
       <div class="mb-3">
-        <label class="form-label">Nombre del producto</label>
-        <input type="text" class="form-control" th:field="*{nombre}" required>
+        <label class="form-label fw-semibold">Nombre</label>
+        <input type="text" class="form-control" th:field="*{nombre}"
+               placeholder="Ej: Abono NPK" required>
       </div>
 
-      <!-- Categoría -->
       <div class="mb-3">
-        <label class="form-label">Categoría</label>
-        <select class="form-select" th:field="*{categoria}" required>
-          <option value="">Selecciona una categoría</option>
-          <option value="Semillas">Semillas</option>
-          <option value="Fertilizante">Fertilizante</option>
-          <option value="Herramientas">Herramientas</option>
-          <option value="Macetas">Macetas</option>
-          <option value="Riego">Riego</option>
-          <option value="Otros">Otros</option>
-        </select>
-
-      </div>
-
-      <!-- Cantidad -->
-      <div class="mb-3">
-        <label class="form-label">Cantidad</label>
-        <input type="text" class="form-control" th:field="*{cantidad}" required>
-      </div>
-
-      <!-- Estado -->
-      <div class="mb-3">
-        <label class="form-label">Estado</label>
-        <select class="form-select" th:field="*{estado}" required>
-          <option value="">Selecciona un estado</option>
-          <option value="Disponible">Disponible</option>
-          <option value="Bajo">Bajo</option>
-          <option value="Agotado">Agotado</option>
+        <label class="form-label fw-semibold">Categoría</label>
+        <select class="form-select" th:field="*{categoria}">
+          <option value="semilla">🌰 Semilla</option>
+          <option value="herramienta">🔧 Herramienta</option>
+          <option value="fertilizante">🧪 Fertilizante</option>
+          <option value="pesticida">🐛 Pesticida</option>
+          <option value="sustrato">🪨 Sustrato</option>
+          <option value="otro">📦 Otro</option>
         </select>
       </div>
 
-      <!-- Botones -->
-      <div class="d-flex justify-content-between mt-4">
-        <a href="/inventario" class="btn btn-secondary">Volver</a>
-        <button type="submit" class="btn btn-save">Guardar</button>
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Cantidad</label>
+        <input type="number" class="form-control" th:field="*{cantidad}"
+               min="0" placeholder="0" required>
       </div>
 
-    </form>
+      <div class="mb-4">
+        <label class="form-label fw-semibold">Estado</label>
+        <select class="form-select" th:field="*{estado}">
+          <option value="disponible">✅ Disponible</option>
+          <option value="bajo">⚠️ Stock bajo</option>
+          <option value="agotado">❌ Agotado</option>
+        </select>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success flex-grow-1">Guardar</button>
+        <a href="/inventario" class="btn btn-outline-secondary flex-grow-1">Cancelar</a>
+      </div>
 
   </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

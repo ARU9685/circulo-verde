@@ -48,8 +48,8 @@ public class DiarioController {
 
     // GUARDAR NUEVA ENTRADA
     @PostMapping("/diario/guardar")
-        public String guardarEntrada(@ModelAttribute EntradaDiario entrada,
-                                     HttpSession session) {
+    public String guardarEntrada(@ModelAttribute EntradaDiario entrada,
+                                 HttpSession session) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuarioHuerto");
         if (usuario == null) {
@@ -66,4 +66,5 @@ public class DiarioController {
     }
 
 }
+
 

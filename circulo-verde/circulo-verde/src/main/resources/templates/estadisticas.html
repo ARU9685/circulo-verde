@@ -4,152 +4,197 @@
     <meta charset="UTF-8">
     <title>Estadísticas | Círculo Verde</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        body {
-            background-color: #f2e7d5;
-        }
+        body { background: #eef4ee; font-family:"Segoe UI",sans-serif; }
+        .navbar { background: linear-gradient(90deg,#1a3d1a,#2f6b2f) !important; }
+        .navbar .navbar-brand, .navbar .nav-link { color:#fff !important; }
 
-        .navbar {
-            background-color: #2f5d2f !important;
+        .cv-card {
+            background: white; border-radius: 14px; padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,.07); height: 100%;
         }
-
-        .navbar .navbar-brand,
-        .navbar .nav-link {
-            color: #ffffff !important;
-            font-weight: 500;
+        .stat-hero {
+            border-radius: 14px; padding: 1.5rem; color: white;
+            display: flex; align-items: center; gap: 1.2rem;
         }
-
-        .navbar .nav-link:hover {
-            color: #c8f7c5 !important;
-        }
-
-        .stats-container {
-            background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.08);
-        }
-
-        .stats-title {
-            color: #2f5d2f;
-            font-weight: 700;
-        }
-
-        .stat-card {
-            background-color: #faf7f0;
-            border-left: 5px solid #2f5d2f;
-            padding: 1rem;
-            border-radius: 8px;
-        }
-
-        .chart-box {
-            background-color: #faf7f0;
-            border-radius: 8px;
-            padding: 1rem;
-            height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c6c6c;
-            font-style: italic;
-        }
+        .stat-hero .num { font-size: 2.8rem; font-weight: 800; line-height:1; }
+        .stat-hero .lbl { font-size: .9rem; opacity: .9; }
+        .stat-hero .ico { font-size: 2.5rem; opacity: .7; }
+        .section-title { font-weight:700; color:#1f5c1f; margin-bottom:1rem; }
     </style>
 </head>
-
 <body>
 
-<!-- NAVBAR SUPERIOR -->
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold d-flex align-items-center" href="/inicio">
-            <img src="/img/LogoCirculoVerde.jpeg" alt="Logo" style="height:40px; margin-right:10px;">
-            Círculo Verde
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg shadow-sm" style="background:linear-gradient(90deg,#1a3d1a,#2f6b2f);">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/panel">
+            <img th:src="@{/img/LogoCirculoVerde.jpeg}" alt="Logo"
+                 style="height:38px;border-radius:50%;border:2px solid #a8d5a2;">
+            <span class="text-white">Círculo Verde</span>
         </a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCV">
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
             <span class="navbar-toggler-icon"></span>
         </button>
-
-        <div class="collapse navbar-collapse" id="navbarCV">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/panel">Mi huerto</a>
-                </li>
-
+        <div class="collapse navbar-collapse" id="navMain">
+            <ul class="navbar-nav me-auto ms-3">
+                <li class="nav-item"><a class="nav-link text-white fw-medium" href="/panel">🏡 Mi huerto</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="menuGestion" role="button" data-bs-toggle="dropdown">
-                        Gestión
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/calendario">Calendario</a></li>
-                        <li><a class="dropdown-item" href="/inventario">Inventario</a></li>
-                        <li><a class="dropdown-item" href="/diario">Diario</a></li>
-                        <li><a class="dropdown-item" href="/estadisticas">Estadísticas</a></li>
+                    <a class="nav-link dropdown-toggle text-white fw-medium" href="#" data-bs-toggle="dropdown">🌿 Gestión</a>
+                    <ul class="dropdown-menu border-0 shadow-sm" style="border-radius:10px;">
+                        <li><a class="dropdown-item py-2" href="/calendario"> Calendario</a></li>
+                        <li><a class="dropdown-item py-2" href="/inventario"> Inventario</a></li>
+                        <li><a class="dropdown-item py-2" href="/diario"> Diario</a></li>
+                        <li><hr class="dropdown-divider"></li>
                     </ul>
                 </li>
-
             </ul>
-
-            <a href="/logout" class="btn btn-danger">Salir</a>
+            <a href="/logout" class="btn btn-sm fw-semibold text-white"
+               style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:6px 18px;">
+                Salir →</a>
         </div>
     </div>
 </nav>
 
-<!-- CONTENIDO -->
-<div class="container mt-4">
+<div class="container py-4">
 
-    <div class="stats-container">
+    <h2 class="fw-bold mb-1" style="color:#1f5c1f;">📊 Estadísticas del huerto</h2>
+    <p class="text-muted mb-4">Resumen visual de tu actividad</p>
 
-        <h2 class="stats-title mb-3">Estadísticas del huerto</h2>
-        <p class="text-muted">Resumen visual de tu actividad y progreso</p>
-
-        <!-- TARJETAS DE RESUMEN -->
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <h5>Tareas completadas</h5>
-                    <h3 th:text="${tareasCompletadas}">12</h3>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <h5>Productos en inventario</h5>
-                    <h3 th:text="${productosInventario}">8</h3>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <h5>Entradas en el diario</h5>
-                    <h3 th:text="${entradasDiario}">5</h3>
+    <!-- TARJETAS RESUMEN -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-hero" style="background:linear-gradient(135deg,#388e3c,#66bb6a);">
+                <div class="ico">📋</div>
+                <div>
+                    <div class="num" th:text="${tareasCompletadas}">0</div>
+                    <div class="lbl">Tareas registradas (6 meses)</div>
                 </div>
             </div>
         </div>
-
-        <!-- GRÁFICOS SIMULADOS -->
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <h5>Evolución de tareas</h5>
-                <div class="chart-box">Gráfico de líneas (simulado)</div>
-            </div>
-
-            <div class="col-md-6 mb-4">
-                <h5>Distribución del inventario</h5>
-                <div class="chart-box">Gráfico circular (simulado)</div>
+        <div class="col-md-4">
+            <div class="stat-hero" style="background:linear-gradient(135deg,#f57f17,#ffca28);">
+                <div class="ico">📦</div>
+                <div>
+                    <div class="num" th:text="${productosInventario}">0</div>
+                    <div class="lbl">Productos en inventario</div>
+                </div>
             </div>
         </div>
-
+        <div class="col-md-4">
+            <div class="stat-hero" style="background:linear-gradient(135deg,#5d4037,#a1887f);">
+                <div class="ico">📓</div>
+                <div>
+                    <div class="num" th:text="${entradasDiario}">0</div>
+                    <div class="lbl">Entradas en el diario</div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- GRÁFICOS -->
+    <div class="row g-3">
+
+        <!-- Gráfico de líneas: tareas por mes -->
+        <div class="col-md-7">
+            <div class="cv-card">
+                <div class="section-title">📈 Tareas por mes (últimos 6 meses)</div>
+                <canvas id="chartTareas" height="220"></canvas>
+            </div>
+        </div>
+
+        <!-- Gráfico circular: inventario por categoría -->
+        <div class="col-md-5">
+            <div class="cv-card">
+                <div class="section-title">🥧 Inventario por categoría</div>
+                <div th:if="${categoriasLabels.isEmpty()}"
+                     class="text-muted fst-italic text-center py-5">
+                    Sin productos en inventario todavía
+                </div>
+                <canvas th:if="${!categoriasLabels.isEmpty()}" id="chartInventario" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datos ocultos para Chart.js -->
+    <span id="dataMeses"    th:data-labels="${mesesLabels}"    style="display:none"></span>
+    <span id="dataTotales"  th:data-values="${mesesTotales}"   style="display:none"></span>
+    <span id="dataCatLbl"   th:data-labels="${categoriasLabels}" style="display:none"></span>
+    <span id="dataCatVal"   th:data-values="${categoriasTotales}" style="display:none"></span>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Parsear listas de Thymeleaf a arrays JS
+    function parseList(id, attr) {
+        const raw = document.getElementById(id).getAttribute(attr);
+        return raw.replace(/[\[\]]/g,'').split(',').map(s => s.trim().replace(/^'|'$/g,''));
+    }
 
+    const meses   = parseList('dataMeses',   'data-labels');
+    const totales = parseList('dataTotales', 'data-values').map(Number);
+    const catLbl  = parseList('dataCatLbl',  'data-labels');
+    const catVal  = parseList('dataCatVal',  'data-values').map(Number);
+
+    // Gráfico de líneas — tareas
+    new Chart(document.getElementById('chartTareas'), {
+        type: 'line',
+        data: {
+            labels: meses,
+            datasets: [{
+                label: 'Tareas',
+                data: totales,
+                borderColor: '#2f6b2f',
+                backgroundColor: 'rgba(47,107,47,.12)',
+                borderWidth: 2.5,
+                pointBackgroundColor: '#2f6b2f',
+                pointRadius: 5,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 },
+                    grid: { color: 'rgba(0,0,0,.05)' }
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Gráfico circular — inventario
+    if (catLbl.length && catLbl[0] !== '') {
+        new Chart(document.getElementById('chartInventario'), {
+            type: 'doughnut',
+            data: {
+                labels: catLbl,
+                datasets: [{
+                    data: catVal,
+                    backgroundColor: [
+                        '#4caf50','#81c784','#388e3c',
+                        '#a5d6a7','#f9a825','#ef6c00','#795548'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 16, font: { size: 13 } } }
+                },
+                cutout: '60%'
+            }
+        });
+    }
+</script>
 </body>
 </html>
