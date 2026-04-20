@@ -1,5 +1,6 @@
 package com.circuloverde.circulo_verde.controller;
 
+import com.circuloverde.circulo_verde.model.InfoCultivo;
 import com.circuloverde.circulo_verde.model.Tarea;
 import com.circuloverde.circulo_verde.model.Usuario;
 import com.circuloverde.circulo_verde.service.CalendarioSiembraService;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class CalendarioController {
@@ -40,7 +42,7 @@ public class CalendarioController {
     @GetMapping("/calendario")
     public String mostrarCalendario(
             @RequestParam(required = false) Integer mes,
-            @RequestParam(required = false) Integer anio,   // «año» causaba encoding issues en algunos servidores
+            @RequestParam(required = false) Integer anio,
             Authentication auth,
             HttpSession session,
             Model model) {
@@ -52,75 +54,95 @@ public class CalendarioController {
         int mesActual  = (mes  != null) ? mes  : hoy.getMonthValue();
         int anioActual = (anio != null) ? anio : hoy.getYear();
 
-        // Corregir desbordamiento de mes (< 1 o > 12)
-        if (mesActual < 1) { mesActual = 12; anioActual--; }
-        if (mesActual > 12) { mesActual = 1; anioActual++; }
+        if (mesActual < 1)  { mesActual = 12; anioActual--; }
+        if (mesActual > 12) { mesActual = 1;  anioActual++; }
 
         YearMonth ym = YearMonth.of(anioActual, mesActual);
-
         String nombreMes = ym.getMonth().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("es"));
-        // Capitalizar primera letra
         nombreMes = nombreMes.substring(0, 1).toUpperCase() + nombreMes.substring(1);
 
-        // --- Calendario: semanas ---
+        // Semanas del mes
         int diasMes = ym.lengthOfMonth();
-        int diaSemanaInicio = ym.atDay(1).getDayOfWeek().getValue(); // 1=Lun
-
+        int diaSemanaInicio = ym.atDay(1).getDayOfWeek().getValue();
         List<List<Integer>> semanas = new ArrayList<>();
         List<Integer> semanaActual = new ArrayList<>();
-
         for (int i = 1; i < diaSemanaInicio; i++) semanaActual.add(null);
-
         for (int dia = 1; dia <= diasMes; dia++) {
             semanaActual.add(dia);
-            if (semanaActual.size() == 7) {
-                semanas.add(semanaActual);
-                semanaActual = new ArrayList<>();
-            }
+            if (semanaActual.size() == 7) { semanas.add(semanaActual); semanaActual = new ArrayList<>(); }
         }
         if (!semanaActual.isEmpty()) {
             while (semanaActual.size() < 7) semanaActual.add(null);
             semanas.add(semanaActual);
         }
 
-        // --- Tareas del mes (solo del usuario) ---
+        // Tareas del usuario en este mes
         List<Tarea> tareas = tareaService.obtenerTareasDelMes(usuario.getId(), anioActual, mesActual);
 
-        // --- Siembras recomendadas ---
+        // Cultivos activos este mes con toda su información
         String zona = usuario.getZonaClimatica();
-        List<String> siembrasMes = calendarioSiembraService.obtenerSiembrasDelMes(zona, mesActual);
+        List<InfoCultivo> cultivosDelMes = calendarioSiembraService.obtenerCultivosDelMes(zona, mesActual);
 
-        // --- Clima ---
+        // Separar por acción para mostrar secciones en el template
+        final int mesFinal = mesActual;
+        List<InfoCultivo> enSemillero = cultivosDelMes.stream()
+                .filter(c -> c.getMesesSemillero() != null && c.getMesesSemillero().contains(mesFinal))
+                .collect(Collectors.toList());
+
+        List<InfoCultivo> siembraDirecta = cultivosDelMes.stream()
+                .filter(c -> c.getMesesSiembraDirecta() != null && c.getMesesSiembraDirecta().contains(mesFinal))
+                .collect(Collectors.toList());
+
+        List<InfoCultivo> enPlantacion = cultivosDelMes.stream()
+                .filter(c -> c.getMesesPlantacion() != null && c.getMesesPlantacion().contains(mesFinal))
+                .collect(Collectors.toList());
+
+        List<InfoCultivo> enCosecha = cultivosDelMes.stream()
+                .filter(c -> c.getMesesCosecha() != null && c.getMesesCosecha().contains(mesFinal))
+                .collect(Collectors.toList());
+
+        // Clima
         Map<String, String> clima = weatherService.obtenerTiempo(usuario.getCiudad());
-        List<String> siembrasAjustadas = calendarioSiembraService.ajustarSiembrasPorClima(siembrasMes, clima);
+        List<String> siembrasAjustadas = calendarioSiembraService.ajustarSiembrasPorClima(
+                cultivosDelMes.stream().map(InfoCultivo::getNombre).collect(Collectors.toList()), clima);
 
-        // --- Sativum: plagas y fertilizantes ---
+        // Sativum
         List<JsonNode> plagas = new ArrayList<>();
         JsonNode plagasJson = sativumService.get("/pests?crop=1");
         if (plagasJson != null && plagasJson.isArray()) plagasJson.forEach(plagas::add);
 
         List<JsonNode> fertilizantes = new ArrayList<>();
-        String body = """
-                { "npkToCover": { "n": 100, "p": 20, "k": 30 } }
-                """;
-        JsonNode fertJson = sativumService.post("/nutrients/fertilizers/recommendation", body);
+        JsonNode fertJson = sativumService.post("/nutrients/fertilizers/recommendation",
+                "{ \"npkToCover\": { \"n\": 100, \"p\": 20, \"k\": 30 } }");
         if (fertJson != null && fertJson.isArray()) fertJson.forEach(fertilizantes::add);
 
-        // --- Modelo ---
+        // Pasar acción del mes a cada cultivo como Map para Thymeleaf
+        Map<String, String> accionesPorCultivo = new LinkedHashMap<>();
+        for (InfoCultivo c : cultivosDelMes) {
+            accionesPorCultivo.put(c.getNombre(),
+                    calendarioSiembraService.obtenerAccionDelMes(c, mesActual));
+        }
+
         model.addAttribute("semanas",          semanas);
         model.addAttribute("tareas",           tareas);
         model.addAttribute("mes",              mesActual);
         model.addAttribute("anio",             anioActual);
         model.addAttribute("nombreMes",        nombreMes);
         model.addAttribute("zona",             zona);
-        model.addAttribute("siembrasMes",      siembrasMes);
-        model.addAttribute("cultivosClima",    siembrasAjustadas);
+        model.addAttribute("cultivosDelMes",   cultivosDelMes);
+        model.addAttribute("enSemillero",      enSemillero);
+        model.addAttribute("siembraDirecta",   siembraDirecta);
+        model.addAttribute("enPlantacion",     enPlantacion);
+        model.addAttribute("enCosecha",        enCosecha);
+        model.addAttribute("accionesPorCultivo", accionesPorCultivo);
+        model.addAttribute("siembrasAjustadas",siembrasAjustadas);
         model.addAttribute("clima",            clima);
         model.addAttribute("plagas",           plagas.isEmpty() ? null : plagas);
         model.addAttribute("fertilizantes",    fertilizantes.isEmpty() ? null : fertilizantes);
         model.addAttribute("hoy",              hoy.getDayOfMonth());
+        model.addAttribute("mesHoy",           hoy.getMonthValue());
+        model.addAttribute("anioHoy",          hoy.getYear());
 
         return "calendario";
     }
 }
-
