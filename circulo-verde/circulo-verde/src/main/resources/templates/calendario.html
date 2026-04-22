@@ -6,126 +6,146 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background:#eef4ee; font-family:"Segoe UI",sans-serif; }
+        html { scroll-padding-top: 70px; }
+        body { background:#eef4ee; font-family:"Segoe UI",sans-serif; margin:0; }
+
         .navbar { background:linear-gradient(90deg,#1a3d1a,#2f6b2f) !important; }
         .navbar .navbar-brand,.navbar .nav-link { color:#fff !important; }
+
+        /* ── Layout principal: dos columnas flex ── */
+        .cal-page {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        /* Columna izquierda: calendario + botón + acordeones */
+        .cal-left {
+            flex: 1 1 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Parte sticky de la columna izquierda (solo cabecera+clima+tabla) */
+        .cal-sticky {
+            position: relative;
+            top: 0;
+            z-index: 100;
+            background: #eef4ee;
+            padding-bottom: 6px;
+        }
+
+        /* Parte normal (leyenda + botón + plagas + fertilizantes) */
+        .cal-bottom { /* flujo normal */ }
+
+        /* Columna derecha: lista de cultivos, sticky con scroll propio */
+        .cal-right {
+            width: 340px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 62px;
+            height: calc(100vh - 78px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #a8d5a2 transparent;
+        }
+        .cal-right::-webkit-scrollbar { width: 4px; }
+        .cal-right::-webkit-scrollbar-thumb { background:#a8d5a2; border-radius:4px; }
+
+        /* Móvil: columna única, sin sticky */
+        @media (max-width: 991px) {
+            .cal-page { flex-direction: column; }
+            .cal-right { width:100%; position:static; height:auto; overflow-y:visible; }
+            .cal-sticky { position:static; }
+        }
 
         /* ── Cabecera mes ── */
         .mes-header {
             background:linear-gradient(135deg,#2f6b2f,#4a9e4a);
-            color:white; border-radius:14px; padding:1.2rem 1.8rem;
+            color:white; border-radius:14px; padding:1rem 1.5rem;
             display:flex; justify-content:space-between; align-items:center;
-            margin-bottom:1.2rem;
+            margin-bottom:.8rem;
         }
-        .mes-header h2 { margin:0; font-size:1.5rem; font-weight:700; }
-        .mes-header .zona-badge {
-            background:rgba(255,255,255,.2);
-            border-radius:20px; padding:4px 14px;
-            font-size:.85rem; border:1px solid rgba(255,255,255,.3);
+        .mes-header h2 { margin:0; font-size:1.4rem; font-weight:700; }
+        .zona-badge {
+            background:rgba(255,255,255,.2); border-radius:20px;
+            padding:3px 12px; font-size:.82rem;
+            border:1px solid rgba(255,255,255,.3);
         }
         .btn-mes {
             background:rgba(255,255,255,.2); color:white;
-            border:1px solid rgba(255,255,255,.4);
-            border-radius:10px; padding:6px 16px;
-            text-decoration:none; font-size:.9rem;
-            transition:.15s;
+            border:1px solid rgba(255,255,255,.4); border-radius:10px;
+            padding:5px 14px; text-decoration:none; font-size:.88rem; transition:.15s;
         }
         .btn-mes:hover { background:rgba(255,255,255,.35); color:white; }
 
         /* ── Clima ── */
         .clima-bar {
-            background:white; border-radius:12px;
-            padding:.9rem 1.2rem;
+            background:white; border-radius:12px; padding:.8rem 1.2rem;
             box-shadow:0 1px 6px rgba(0,0,0,.07);
-            display:flex; align-items:center; gap:1rem;
-            margin-bottom:1rem;
+            display:flex; align-items:center; gap:1rem; margin-bottom:.8rem;
+            flex-wrap:wrap;
         }
-        .clima-bar img { width:50px; }
-        .clima-temp { font-size:1.8rem; font-weight:800; color:#2f6b2f; line-height:1; }
-        .clima-meta { font-size:.8rem; color:#888; }
+        .clima-bar img { width:48px; }
+        .clima-temp { font-size:1.7rem; font-weight:800; color:#2f6b2f; line-height:1; }
+        .clima-meta { font-size:.78rem; color:#888; }
 
-        /* ── Calendario grid ── */
-        .cal-wrap { background:white; border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.07); overflow:hidden; margin-bottom:1.2rem; }
-        .cal-head th {
-            background:#2f6b2f; color:white;
-            text-align:center; padding:.5rem;
-            font-size:.82rem; font-weight:500;
-        }
-        .cal-day {
-            height:90px; border:0.5px solid #e8f0e8;
-            vertical-align:top; padding:5px;
-            font-size:.8rem; position:relative;
-        }
+        /* ── Tabla calendario ── */
+        .cal-wrap { background:white; border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.07); overflow:hidden; }
+        .cal-head th { background:#2f6b2f; color:white; text-align:center; padding:.45rem; font-size:.8rem; font-weight:500; }
+        .cal-day { height:88px; border:0.5px solid #e8f0e8; vertical-align:top; padding:5px; font-size:.8rem; }
         .cal-day:hover { background:#f5fdf5; }
-        .day-num { font-weight:600; color:#2f6b2f; font-size:.85rem; }
+        .day-num { font-weight:600; color:#2f6b2f; font-size:.83rem; }
         .today-cell { background:#f0faf0 !important; outline:2px solid #2f6b2f; outline-offset:-2px; }
         .empty-cell { background:#fafcfa; }
-
-        /* ── Badges de tareas en el día ── */
         .task-dot {
-            display:block; border-radius:4px;
-            padding:1px 5px; margin-top:2px;
-            font-size:.72rem; white-space:nowrap;
-            overflow:hidden; text-overflow:ellipsis;
-            max-width:100%;
+            display:block; border-radius:4px; padding:1px 5px; margin-top:2px;
+            font-size:.7rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;
         }
 
-        /* ── Secciones de cultivos ── */
-        .seccion-cultivos { margin-bottom:1rem; }
-        .seccion-titulo {
-            font-weight:700; font-size:.9rem;
-            padding:.5rem 1rem; border-radius:10px 10px 0 0;
-            margin:0;
-        }
-        .seccion-body { background:white; border-radius:0 0 12px 12px; padding:.8rem 1rem; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+        /* ── Leyenda ── */
+        .leyenda { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+        .ley-item { display:flex; align-items:center; gap:4px; font-size:.78rem; color:#666; }
+        .ley-dot { width:11px; height:11px; border-radius:3px; }
 
-        /* ── Tarjeta cultivo ── */
+        /* ── Secciones cultivos ── */
+        .seccion-cultivos { margin-bottom:.8rem; }
+        .seccion-titulo { font-weight:700; font-size:.88rem; padding:.45rem .9rem; border-radius:10px 10px 0 0; margin:0; }
+        .seccion-body { background:white; border-radius:0 0 12px 12px; padding:.7rem .9rem; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+
         .cultivo-card {
-            border:0.5px solid #d4e8d4;
-            border-radius:10px; padding:.75rem 1rem;
-            margin-bottom:.6rem; cursor:pointer;
-            transition:transform .15s, box-shadow .15s;
-            background:white;
+            border:0.5px solid #d4e8d4; border-radius:10px; padding:.65rem .9rem;
+            margin-bottom:.5rem; cursor:pointer;
+            transition:transform .15s, box-shadow .15s; background:white;
         }
         .cultivo-card:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,.1); }
         .cultivo-card.collapsed .cultivo-detalle { display:none; }
-        .cultivo-nombre { font-weight:600; font-size:.92rem; color:#1f5c1f; }
-        .cultivo-accion { font-size:.78rem; color:#666; margin-left:.4rem; }
-        .cultivo-detalle { margin-top:.6rem; border-top:0.5px solid #e8f0e8; padding-top:.6rem; }
-        .detalle-row { display:flex; gap:.5rem; margin-bottom:.35rem; font-size:.82rem; }
-        .detalle-label { min-width:120px; color:#888; font-weight:500; }
+        .cultivo-nombre { font-weight:600; font-size:.9rem; color:#1f5c1f; }
+        .cultivo-accion { font-size:.75rem; color:#888; margin-left:.4rem; }
+        .cultivo-detalle { margin-top:.5rem; border-top:0.5px solid #e8f0e8; padding-top:.5rem; }
+        .detalle-row { display:flex; gap:.4rem; margin-bottom:.3rem; font-size:.8rem; }
+        .detalle-label { min-width:110px; color:#888; font-weight:500; }
         .detalle-valor { color:#333; }
-        .cuidado-pill {
-            display:inline-block; background:#e8f5e8;
-            color:#2e7d32; border-radius:20px;
-            padding:2px 10px; font-size:.75rem;
-            margin:2px;
-        }
-        .nota-box {
-            background:#fffde7; border-left:3px solid #f9a825;
-            border-radius:0 6px 6px 0; padding:4px 10px;
-            font-size:.78rem; color:#555; margin-top:.4rem;
-        }
+        .cuidado-pill { display:inline-block; background:#e8f5e8; color:#2e7d32; border-radius:20px; padding:2px 9px; font-size:.73rem; margin:2px; }
+        .nota-box { background:#fffde7; border-left:3px solid #f9a825; border-radius:0 6px 6px 0; padding:4px 10px; font-size:.76rem; color:#555; margin-top:.4rem; }
 
-        /* ── Accordion secciones sativum ── */
-        .accordion-button { font-size:.9rem; font-weight:500; }
+        .accordion-button { font-size:.88rem; font-weight:500; }
         .accordion-button:not(.collapsed) { background:#e8f5e8; color:#1f5c1f; }
-
-        /* ── Leyenda ── */
-        .leyenda { display:flex; flex-wrap:wrap; gap:8px; margin-top:.5rem; }
-        .ley-item { display:flex; align-items:center; gap:4px; font-size:.8rem; color:#666; }
-        .ley-dot { width:12px; height:12px; border-radius:3px; }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg shadow-sm" style="background:linear-gradient(90deg,#1a3d1a,#2f6b2f);">
-    <div class="container-lg">
+<!-- NAVBAR STICKY -->
+<nav class="navbar navbar-expand-lg shadow-sm" style="background:linear-gradient(90deg,#1a3d1a,#2f6b2f);position:sticky;top:0;z-index:1030;">
+    <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/panel">
             <img th:src="@{/img/LogoCirculoVerde.jpeg}" alt="Logo"
-                 style="height:36px;border-radius:50%;border:2px solid #a8d5a2;">
-            <span class="text-white">Círculo Verde</span>
+                 style="height:38px;border-radius:50%;border:2px solid #a8d5a2;">
+            <span class="text-white" style="letter-spacing:.5px;">Círculo Verde</span>
         </a>
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
             <span class="navbar-toggler-icon"></span>
@@ -134,7 +154,7 @@
             <ul class="navbar-nav me-auto ms-3">
                 <li class="nav-item"><a class="nav-link text-white fw-medium" href="/panel">Mi huerto</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-white fw-medium" href="#" data-bs-toggle="dropdown">🌿 Gestión</a>
+                    <a class="nav-link dropdown-toggle text-white fw-medium" href="#" data-bs-toggle="dropdown">Gestión</a>
                     <ul class="dropdown-menu border-0 shadow-sm" style="border-radius:10px;">
                         <li><a class="dropdown-item py-2" href="/calendario">Calendario</a></li>
                         <li><a class="dropdown-item py-2" href="/inventario">Inventario</a></li>
@@ -144,19 +164,81 @@
                     </ul>
                 </li>
             </ul>
+            <form class="d-flex me-3" id="navSearchForm" onsubmit="buscarEnApp(event)">
+                <div class="input-group input-group-sm" style="width:220px;">
+                    <input type="text" id="navSearch" class="form-control border-0"
+                           placeholder="Buscar cultivo, tarea..."
+                           style="border-radius:20px 0 0 20px;background:rgba(255,255,255,.15);color:white;font-size:.85rem;"
+                           autocomplete="off">
+                    <button class="btn border-0" type="submit"
+                            style="border-radius:0 20px 20px 0;background:rgba(255,255,255,.2);color:white;">🔍</button>
+                </div>
+                <div id="searchResults"
+                     style="display:none;position:absolute;top:58px;right:80px;width:280px;
+                            background:white;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);
+                            z-index:2000;max-height:320px;overflow-y:auto;"></div>
+            </form>
             <a href="/logout" class="btn btn-sm fw-semibold text-white"
-               style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:6px 18px;">Salir →</a>
+               style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:6px 18px;">
+                Salir →
+            </a>
         </div>
     </div>
 </nav>
+<script>
+    const CULTIVOS_BUSQUEDA = [
+      {n:"Tomate",url:"/calendario",desc:"Siembra feb-mar · Cosecha jun-oct"},
+      {n:"Pimiento",url:"/calendario",desc:"Siembra ene-feb · Cosecha jul-nov"},
+      {n:"Lechuga",url:"/calendario",desc:"Siembra ago-oct · Cosecha nov-mar"},
+      {n:"Calabacín",url:"/calendario",desc:"Siembra mar-abr · Cosecha jun-oct"},
+      {n:"Pepino",url:"/calendario",desc:"Siembra feb-mar · Cosecha jun-sep"},
+      {n:"Berenjena",url:"/calendario",desc:"Siembra ene-feb · Cosecha jun-nov"},
+      {n:"Zanahoria",url:"/calendario",desc:"Siembra feb-abr · Cosecha jun-sep"},
+      {n:"Cebolla",url:"/calendario",desc:"Siembra ago-sep · Cosecha may-jun"},
+      {n:"Ajo",url:"/calendario",desc:"Plantación oct-nov · Cosecha may-jun"},
+      {n:"Patata",url:"/calendario",desc:"Plantación mar-abr · Cosecha jul-ago"},
+      {n:"Judía verde",url:"/calendario",desc:"Siembra mar-may · Cosecha may-jul"},
+      {n:"Brócoli",url:"/calendario",desc:"Semillero jul-ago · Cosecha nov-mar"},
+      {n:"Espárrago",url:"/calendario",desc:"Plantación mar-abr · Cosecha mar-may"},
+      {n:"Alcachofa",url:"/calendario",desc:"Plantación ago-sep · Cosecha nov-abr"},
+      {n:"Sandía",url:"/calendario",desc:"Siembra feb-mar · Cosecha jul-sep"},
+      {n:"Melón",url:"/calendario",desc:"Siembra feb-mar · Cosecha jul-sep"},
+      {n:"Acelga",url:"/calendario",desc:"Siembra feb/ago · Cosecha todo el año"},
+      {n:"Espinaca",url:"/calendario",desc:"Siembra ago-sep · Cosecha oct-abr"},
+      {n:"Inventario",url:"/inventario",desc:"Ver tus productos y suministros"},
+      {n:"Diario",url:"/diario",desc:"Entradas de tu diario del huerto"},
+      {n:"Estadísticas",url:"/estadisticas",desc:"Resumen de actividad"},
+    ];
+    function buscarEnApp(e) {
+        e.preventDefault();
+        const q = document.getElementById("navSearch").value.trim().toLowerCase();
+        if (!q) return;
+        const res = CULTIVOS_BUSQUEDA.filter(c => c.n.toLowerCase().includes(q) || c.desc.toLowerCase().includes(q));
+        const box = document.getElementById("searchResults");
+        box.innerHTML = res.length
+            ? res.map(r => '<a href="'+r.url+'" style="display:block;padding:10px 16px;text-decoration:none;color:#1f5c1f;border-bottom:0.5px solid #e8f0e8;font-size:.88rem;"><strong>'+r.n+'</strong><br><span style="color:#888;font-size:.78rem;">'+r.desc+'</span></a>').join('')
+            : '<div style="padding:12px 16px;color:#888;font-size:.85rem;">Sin resultados</div>';
+        box.style.display = 'block';
+    }
+    document.addEventListener("click", e => {
+        const box = document.getElementById("searchResults");
+        if (box && !box.contains(e.target) && e.target.id !== "navSearch") box.style.display = "none";
+    });
+    document.getElementById("navSearch")?.addEventListener("input", function() {
+        if (this.value.length > 1) buscarEnApp({preventDefault:()=>{}});
+        else document.getElementById("searchResults").style.display = "none";
+    });
+</script>
 
-<div class="container-lg py-4">
-    <div class="row g-3">
+<!-- CONTENIDO PRINCIPAL -->
+<div class="cal-page">
 
-        <!-- ═══════════ COLUMNA PRINCIPAL ═══════════ -->
-        <div class="col-lg-8">
+    <!-- ═══ COLUMNA IZQUIERDA ═══ -->
+    <div class="cal-left">
 
-            <!-- Cabecera mes -->
+        <!-- STICKY: cabecera + clima + tabla -->
+        <div class="cal-sticky">
+
             <div class="mes-header">
                 <a th:href="@{/calendario(mes=${mes - 1}, anio=${anio})}" class="btn-mes">&laquo; Anterior</a>
                 <div class="text-center">
@@ -166,10 +248,8 @@
                 <a th:href="@{/calendario(mes=${mes + 1}, anio=${anio})}" class="btn-mes">Siguiente &raquo;</a>
             </div>
 
-            <!-- Clima -->
             <div class="clima-bar">
-                <img th:if="${clima.icono != null and !#strings.isEmpty(clima.icono)}"
-                     th:src="${clima.icono}" alt="clima">
+                <img th:if="${clima.icono != null and !#strings.isEmpty(clima.icono)}" th:src="${clima.icono}" alt="clima">
                 <div>
                     <div class="clima-temp" th:text="${clima.temperatura + '°C'}">--</div>
                     <div class="clima-meta" th:text="${clima.descripcion}"></div>
@@ -178,10 +258,9 @@
                     <span class="clima-meta">💧 <b th:text="${clima.humedad}">--</b>%</span>
                     <span class="clima-meta">💨 <b th:text="${clima.viento}">--</b> m/s</span>
                 </div>
-                <div class="ms-3 text-muted" style="font-size:.8rem;" th:text="${clima.texto}"></div>
+                <div class="ms-3 text-muted" style="font-size:.78rem;" th:text="${clima.texto}"></div>
             </div>
 
-            <!-- Calendario -->
             <div class="cal-wrap">
                 <table class="table table-bordered mb-0">
                     <thead class="cal-head">
@@ -191,18 +270,18 @@
                     <tr th:each="semana : ${semanas}">
                         <td th:each="dia : ${semana}"
                             th:class="${dia == null ? 'cal-day empty-cell' :
-                               (dia == hoy and mes == mesHoy and anio == anioHoy) ? 'cal-day today-cell' :
-                               'cal-day'}">
+                                           (dia == hoy and mes == mesHoy and anio == anioHoy) ? 'cal-day today-cell' :
+                                           'cal-day'}">
                             <div class="day-num" th:text="${dia}"></div>
                             <th:block th:if="${dia != null}" th:each="t : ${tareas}">
-                        <span th:if="${t.fecha.dayOfMonth == dia}"
-                              th:text="${t.titulo}"
-                              class="task-dot"
-                              th:classappend="${t.tipo == 'riego'        ? ' bg-primary text-white'  :
-                                               t.tipo == 'siembra'      ? ' bg-success text-white'  :
-                                               t.tipo == 'abonado'      ? ' bg-warning text-dark'   :
-                                                                          ' bg-secondary text-white'}">
-                        </span>
+                                    <span th:if="${t.fecha.dayOfMonth == dia}"
+                                          th:text="${t.titulo}"
+                                          class="task-dot"
+                                          th:classappend="${t.tipo == 'riego'       ? ' bg-primary text-white'  :
+                                                           t.tipo == 'siembra'     ? ' bg-success text-white'  :
+                                                           t.tipo == 'abonado'     ? ' bg-warning text-dark'   :
+                                                                                     ' bg-secondary text-white'}">
+                                    </span>
                             </th:block>
                         </td>
                     </tr>
@@ -210,20 +289,22 @@
                 </table>
             </div>
 
-            <!-- Leyenda tareas -->
-            <div class="leyenda mb-3">
+        </div><!-- /cal-sticky -->
+
+        <!-- NORMAL: leyenda + botón + plagas + fertilizantes -->
+        <div class="cal-bottom">
+
+            <div class="leyenda mb-2">
                 <span class="ley-item"><span class="ley-dot bg-primary"></span>Riego</span>
                 <span class="ley-item"><span class="ley-dot bg-success"></span>Siembra</span>
                 <span class="ley-item"><span class="ley-dot bg-warning"></span>Abonado</span>
                 <span class="ley-item"><span class="ley-dot bg-secondary"></span>Mantenimiento</span>
             </div>
 
-            <!-- Botón nueva tarea -->
             <button class="btn btn-success w-100 mb-3" data-bs-toggle="modal" data-bs-target="#modalTarea">
                 + Añadir tarea al calendario
             </button>
 
-            <!-- Plagas (Sativum) -->
             <div class="accordion mb-2" id="accPlagas">
                 <div class="accordion-item border-0 shadow-sm" style="border-radius:10px;overflow:hidden;">
                     <h2 class="accordion-header">
@@ -243,8 +324,7 @@
                 </div>
             </div>
 
-            <!-- Fertilizantes (Sativum) -->
-            <div class="accordion mb-2" id="accFert">
+            <div class="accordion mb-3" id="accFert">
                 <div class="accordion-item border-0 shadow-sm" style="border-radius:10px;overflow:hidden;">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button"
@@ -264,183 +344,179 @@
                 </div>
             </div>
 
+        </div><!-- /cal-bottom -->
+
+    </div><!-- /cal-left -->
+
+    <!-- ═══ COLUMNA DERECHA: cultivos (sticky con scroll) ═══ -->
+    <div class="cal-right">
+
+        <div style="background:white;border-radius:14px;padding:.9rem 1rem;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:.8rem;">
+            <div class="fw-bold mb-1" style="color:#1f5c1f;">Actividad de <span th:text="${nombreMes}"></span></div>
+            <div class="text-muted" style="font-size:.8rem;" th:text="'Zona ' + ${zona}"></div>
         </div>
-        <!-- ═══════════ FIN COLUMNA PRINCIPAL ═══════════ -->
 
-        <!-- ═══════════ COLUMNA LATERAL: CULTIVOS ═══════════ -->
-        <div class="col-lg-4">
-
-            <div style="background:white;border-radius:14px;padding:1rem;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:1rem;">
-                <div class="fw-bold mb-1" style="color:#1f5c1f;">📅 Actividad de <span th:text="${nombreMes}"></span></div>
-                <div class="text-muted" style="font-size:.82rem;" th:text="'Zona ' + ${zona}"></div>
+        <!-- SEMILLERO -->
+        <div class="seccion-cultivos" th:if="${!enSemillero.isEmpty()}">
+            <div class="seccion-titulo" style="background:#fff3e0;color:#e65100;">
+                🌱 Iniciar semillero (<span th:text="${enSemillero.size()}"></span>)
             </div>
-
-            <!-- SEMILLERO -->
-            <div class="seccion-cultivos" th:if="${!enSemillero.isEmpty()}">
-                <div class="seccion-titulo" style="background:#fff3e0;color:#e65100;">
-                    🌱 Iniciar semillero (<span th:text="${enSemillero.size()}"></span>)
-                </div>
-                <div class="seccion-body">
-                    <div th:each="c, stat : ${enSemillero}"
-                         class="cultivo-card collapsed"
-                         th:id="'card-s-' + ${stat.index}"
-                         th:onclick="'toggleCard(\'card-s-' + ${stat.index} + '\')'">
-                        <div class="d-flex align-items-center">
-                            <span style="font-size:1.2rem;" th:text="${c.icono}"></span>
-                            <span class="cultivo-nombre ms-2" th:text="${c.nombre}"></span>
-                            <span class="cultivo-accion ms-auto" th:if="${c.diasEnSemillero != null}"
-                                  th:text="'~' + ${c.diasEnSemillero} + ' días en semillero'"></span>
+            <div class="seccion-body">
+                <div th:each="c, stat : ${enSemillero}"
+                     class="cultivo-card collapsed"
+                     th:id="'card-s-' + ${stat.index}"
+                     th:onclick="'toggleCard(\'card-s-' + ${stat.index} + '\')'">
+                    <div class="d-flex align-items-center">
+                        <span style="font-size:1.1rem;" th:text="${c.icono}"></span>
+                        <span class="cultivo-nombre ms-2" th:text="${c.nombre}"></span>
+                        <span class="cultivo-accion ms-auto" th:if="${c.diasEnSemillero != null}"
+                              th:text="'~' + ${c.diasEnSemillero} + ' días'"></span>
+                    </div>
+                    <div class="cultivo-detalle">
+                        <div class="detalle-row">
+                            <span class="detalle-label">⏱ En semillero</span>
+                            <span class="detalle-valor" th:text="${c.diasEnSemillero != null ? c.diasEnSemillero + ' días antes de trasplantar' : 'Siembra directa'}"></span>
                         </div>
-                        <div class="cultivo-detalle">
-                            <div class="detalle-row">
-                                <span class="detalle-label">⏱ Tiempo semillero</span>
-                                <span class="detalle-valor"
-                                      th:text="${c.diasEnSemillero != null ? c.diasEnSemillero + ' días antes de trasplantar' : 'Siembra directa'}"></span>
-                            </div>
-                            <div class="detalle-row" th:if="${c.mesesPlantacion != null}">
-                                <span class="detalle-label">🌿 Plantación</span>
-                                <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesPlantacion, ', ')}"></span>
-                            </div>
-                            <div class="detalle-row" th:if="${c.mesesCosecha != null}">
-                                <span class="detalle-label">🌾 Cosecha</span>
-                                <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesCosecha, ', ')}"></span>
-                            </div>
-                            <div class="detalle-row">
-                                <span class="detalle-label">💧 Riego</span>
-                                <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
-                            </div>
-                            <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
-                                <span class="detalle-label">🔧 Cuidados</span><br>
-                                <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
-                            </div>
-                            <div th:if="${c.nota != null}" class="nota-box mt-2">
-                                💡 <span th:text="${c.nota}"></span>
-                            </div>
+                        <div class="detalle-row" th:if="${c.mesesPlantacion != null}">
+                            <span class="detalle-label">🌿 Plantación</span>
+                            <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesPlantacion, ', ')}"></span>
+                        </div>
+                        <div class="detalle-row" th:if="${c.mesesCosecha != null}">
+                            <span class="detalle-label">🌾 Cosecha</span>
+                            <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesCosecha, ', ')}"></span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">💧 Riego</span>
+                            <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
+                        </div>
+                        <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
+                            <span class="detalle-label">🔧 Cuidados</span><br>
+                            <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
+                        </div>
+                        <div th:if="${c.nota != null}" class="nota-box mt-2">
+                            💡 <span th:text="${c.nota}"></span>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- SIEMBRA DIRECTA -->
-            <div class="seccion-cultivos" th:if="${!siembraDirecta.isEmpty()}">
-                <div class="seccion-titulo" style="background:#e8f5e8;color:#1b5e20;">
-                    🌾 Siembra directa (<span th:text="${siembraDirecta.size()}"></span>)
-                </div>
-                <div class="seccion-body">
-                    <div th:each="c, stat : ${siembraDirecta}"
-                         class="cultivo-card collapsed"
-                         th:id="'card-d-' + ${stat.index}"
-                         th:onclick="'toggleCard(\'card-d-' + ${stat.index} + '\')'">
-                        <div class="d-flex align-items-center">
-                            <span style="font-size:1.2rem;" th:text="${c.icono}"></span>
-                            <span class="cultivo-nombre ms-2" th:text="${c.nombre}"></span>
-                            <span class="cultivo-accion ms-auto">directo</span>
-                        </div>
-                        <div class="cultivo-detalle">
-                            <div class="detalle-row">
-                                <span class="detalle-label">💧 Riego</span>
-                                <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
-                            </div>
-                            <div class="detalle-row" th:if="${c.mesesCosecha != null}">
-                                <span class="detalle-label">🌾 Cosecha</span>
-                                <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesCosecha, ', ')}"></span>
-                            </div>
-                            <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
-                                <span class="detalle-label">🔧 Cuidados</span><br>
-                                <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
-                            </div>
-                            <div th:if="${c.nota != null}" class="nota-box mt-2">
-                                💡 <span th:text="${c.nota}"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PLANTACIÓN / TRASPLANTE -->
-            <div class="seccion-cultivos" th:if="${!enPlantacion.isEmpty()}">
-                <div class="seccion-titulo" style="background:#e3f2fd;color:#0d47a1;">
-                    🌿 Plantar / Trasplantar (<span th:text="${enPlantacion.size()}"></span>)
-                </div>
-                <div class="seccion-body">
-                    <div th:each="c, stat : ${enPlantacion}"
-                         class="cultivo-card collapsed"
-                         th:id="'card-p-' + ${stat.index}"
-                         th:onclick="'toggleCard(\'card-p-' + ${stat.index} + '\')'">
-                        <div class="d-flex align-items-center">
-                            <span style="font-size:1.2rem;" th:text="${c.icono}"></span>
-                            <span class="cultivo-nombre ms-2" th:text="${c.nombre}"></span>
-                            <span class="cultivo-accion ms-auto"
-                                  th:text="${accionesPorCultivo.get(c.nombre)}"></span>
-                        </div>
-                        <div class="cultivo-detalle">
-                            <div class="detalle-row">
-                                <span class="detalle-label">💧 Riego</span>
-                                <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
-                            </div>
-                            <div class="detalle-row">
-                                <span class="detalle-label">🚿 Tipo riego</span>
-                                <span class="detalle-valor" th:text="${c.tipoRiego}"></span>
-                            </div>
-                            <div class="detalle-row" th:if="${c.mesesCosecha != null}">
-                                <span class="detalle-label">🌾 Cosecha</span>
-                                <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesCosecha, ', ')}"></span>
-                            </div>
-                            <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
-                                <span class="detalle-label">🔧 Cuidados</span><br>
-                                <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
-                            </div>
-                            <div th:if="${c.nota != null}" class="nota-box mt-2">
-                                💡 <span th:text="${c.nota}"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COSECHA -->
-            <div class="seccion-cultivos" th:if="${!enCosecha.isEmpty()}">
-                <div class="seccion-titulo" style="background:#fce4ec;color:#880e4f;">
-                    🌾 Cosechar este mes (<span th:text="${enCosecha.size()}"></span>)
-                </div>
-                <div class="seccion-body">
-                    <div th:each="c, stat : ${enCosecha}"
-                         class="cultivo-card collapsed"
-                         th:id="'card-c-' + ${stat.index}"
-                         th:onclick="'toggleCard(\'card-c-' + ${stat.index} + '\')'">
-                        <div class="d-flex align-items-center">
-                            <span style="font-size:1.2rem;" th:text="${c.icono}"></span>
-                            <span class="cultivo-nombre ms-2" th:text="${c.nombre}"></span>
-                            <span class="cultivo-accion ms-auto">en cosecha</span>
-                        </div>
-                        <div class="cultivo-detalle">
-                            <div class="detalle-row">
-                                <span class="detalle-label">💧 Riego</span>
-                                <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
-                            </div>
-                            <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
-                                <span class="detalle-label">🔧 Cuidados</span><br>
-                                <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
-                            </div>
-                            <div th:if="${c.nota != null}" class="nota-box mt-2">
-                                💡 <span th:text="${c.nota}"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sin cultivos -->
-            <div th:if="${cultivosDelMes.isEmpty()}"
-                 class="text-center p-4 text-muted" style="background:white;border-radius:14px;">
-                <p class="mb-0">Sin actividad agrícola registrada para este mes en zona <strong th:text="${zona}"></strong>.</p>
-            </div>
-
         </div>
-        <!-- ═══════════ FIN COLUMNA LATERAL ═══════════ -->
 
-    </div>
-</div>
+        <!-- SIEMBRA DIRECTA -->
+        <div class="seccion-cultivos" th:if="${!siembraDirecta.isEmpty()}">
+            <div class="seccion-titulo" style="background:#e8f5e8;color:#1b5e20;">
+                🌾 Siembra directa (<span th:text="${siembraDirecta.size()}"></span>)
+            </div>
+            <div class="seccion-body">
+                <div th:each="c, stat : ${siembraDirecta}"
+                     class="cultivo-card collapsed"
+                     th:id="'card-d-' + ${stat.index}"
+                     th:onclick="'toggleCard(\'card-d-' + ${stat.index} + '\')'">
+                    <div class="d-flex align-items-center">
+                        <span style="font-size:1.1rem;" th:text="${c.icono}"></span>
+                        <span class="cultivo-nombre ms-2" th:text="${c.nombre}"></span>
+                        <span class="cultivo-accion ms-auto">directa</span>
+                    </div>
+                    <div class="cultivo-detalle">
+                        <div class="detalle-row">
+                            <span class="detalle-label">💧 Riego</span>
+                            <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
+                        </div>
+                        <div class="detalle-row" th:if="${c.mesesCosecha != null}">
+                            <span class="detalle-label">🌾 Cosecha</span>
+                            <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesCosecha, ', ')}"></span>
+                        </div>
+                        <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
+                            <span class="detalle-label">🔧 Cuidados</span><br>
+                            <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
+                        </div>
+                        <div th:if="${c.nota != null}" class="nota-box mt-2">
+                            💡 <span th:text="${c.nota}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLANTACIÓN -->
+        <div class="seccion-cultivos" th:if="${!enPlantacion.isEmpty()}">
+            <div class="seccion-titulo" style="background:#e3f2fd;color:#0d47a1;">
+                🌿 Plantar / Trasplantar (<span th:text="${enPlantacion.size()}"></span>)
+            </div>
+            <div class="seccion-body">
+                <div th:each="c, stat : ${enPlantacion}"
+                     class="cultivo-card collapsed"
+                     th:id="'card-p-' + ${stat.index}"
+                     th:onclick="'toggleCard(\'card-p-' + ${stat.index} + '\')'">
+                    <div class="d-flex align-items-center">
+                        <span style="font-size:1.1rem;" th:text="${c.icono}"></span>
+                        <span class="cultivo-nombre ms-2" th:text="${c.nombre}"></span>
+                        <span class="cultivo-accion ms-auto" th:text="${accionesPorCultivo.get(c.nombre)}"></span>
+                    </div>
+                    <div class="cultivo-detalle">
+                        <div class="detalle-row">
+                            <span class="detalle-label">💧 Riego</span>
+                            <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">🚿 Tipo riego</span>
+                            <span class="detalle-valor" th:text="${c.tipoRiego}"></span>
+                        </div>
+                        <div class="detalle-row" th:if="${c.mesesCosecha != null}">
+                            <span class="detalle-label">🌾 Cosecha</span>
+                            <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesCosecha, ', ')}"></span>
+                        </div>
+                        <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
+                            <span class="detalle-label">🔧 Cuidados</span><br>
+                            <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
+                        </div>
+                        <div th:if="${c.nota != null}" class="nota-box mt-2">
+                            💡 <span th:text="${c.nota}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COSECHA -->
+        <div class="seccion-cultivos" th:if="${!enCosecha.isEmpty()}">
+            <div class="seccion-titulo" style="background:#fce4ec;color:#880e4f;">
+                🌾 Cosechar este mes (<span th:text="${enCosecha.size()}"></span>)
+            </div>
+            <div class="seccion-body">
+                <div th:each="c, stat : ${enCosecha}"
+                     class="cultivo-card collapsed"
+                     th:id="'card-c-' + ${stat.index}"
+                     th:onclick="'toggleCard(\'card-c-' + ${stat.index} + '\')'">
+                    <div class="d-flex align-items-center">
+                        <span style="font-size:1.1rem;" th:text="${c.icono}"></span>
+                        <span class="cultivo-nombre ms-2" th:text="${c.nombre}"></span>
+                        <span class="cultivo-accion ms-auto">cosecha</span>
+                    </div>
+                    <div class="cultivo-detalle">
+                        <div class="detalle-row">
+                            <span class="detalle-label">💧 Riego</span>
+                            <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
+                        </div>
+                        <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
+                            <span class="detalle-label">🔧 Cuidados</span><br>
+                            <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
+                        </div>
+                        <div th:if="${c.nota != null}" class="nota-box mt-2">
+                            💡 <span th:text="${c.nota}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${cultivosDelMes.isEmpty()}"
+             class="text-center p-4 text-muted" style="background:white;border-radius:14px;">
+            <p class="mb-0">Sin actividad este mes en zona <strong th:text="${zona}"></strong>.</p>
+        </div>
+
+    </div><!-- /cal-right -->
+
+</div><!-- /cal-page -->
 
 <!-- MODAL NUEVA TAREA -->
 <div class="modal fade" id="modalTarea" tabindex="-1" aria-hidden="true">
@@ -458,8 +534,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Título</label>
-                        <input type="text" class="form-control" name="titulo"
-                               placeholder="Ej: Regar los tomates" required>
+                        <input type="text" class="form-control" name="titulo" placeholder="Ej: Regar los tomates" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Tipo</label>

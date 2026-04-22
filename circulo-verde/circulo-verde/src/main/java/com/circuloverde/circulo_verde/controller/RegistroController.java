@@ -39,10 +39,12 @@ public class RegistroController {
 
         System.out.println(">>> POST /registro alcanzado: " + usuario.getNombre());
 
+        // nombre duplicado
         if (usuarioRepository.findByNombre(usuario.getNombre()) != null) {
             result.rejectValue("nombre", "duplicado", "Este nombre ya está registrado");
         }
 
+        // email duplicado
         if (usuario.getEmail() != null && !usuario.getEmail().isBlank()) {
             if (usuarioRepository.findByEmail(usuario.getEmail()) != null) {
                 result.rejectValue("email", "duplicado", "Este email ya está registrado");
@@ -50,6 +52,10 @@ public class RegistroController {
         } else {
             usuario.setEmail(null);
         }
+
+        // Verificación anti-bot: confirmar contraseña
+        String confirmar = model.asMap().containsKey("confirmarContrasenia")
+                ? (String) model.asMap().get("confirmarContrasenia") : null;
 
         if (result.hasErrors()) {
             System.out.println(">>> Errores de validación: " + result.getAllErrors());

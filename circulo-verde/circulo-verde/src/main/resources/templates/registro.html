@@ -10,126 +10,211 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            padding: 2rem 1rem;
             background: linear-gradient(135deg, #A5D6A7, #2E7D32);
             font-family: "Segoe UI", sans-serif;
         }
         .registro-card {
             background: white;
-            padding: 2rem;
-            width: 440px;
-            border-radius: 14px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            padding: 2rem 2.2rem;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             animation: fadeIn 0.5s ease-out;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to   { opacity: 1; transform: translateY(0); }
         }
+        .form-label { font-weight: 600; font-size: .9rem; color: #333; }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1.5px solid #d0e8d0;
+            padding: .6rem 1rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #2f6b2f;
+            box-shadow: 0 0 0 3px rgba(47,107,47,.12);
+        }
+        .req { color: #e53935; margin-left: 2px; }
+        .strength-bar { height: 4px; border-radius: 2px; transition: width .3s, background .3s; margin-top: 4px; }
+        .strength-text { font-size: .75rem; margin-top: 2px; }
+        .check-item { display: flex; align-items: center; gap: 6px; font-size: .8rem; color: #888; margin-top: 3px; }
+        .check-item.ok { color: #2e7d32; }
+        .check-item.ok::before { content: "✓"; font-weight: 700; }
+        .check-item:not(.ok)::before { content: "○"; }
+        .btn-registro {
+            background: linear-gradient(135deg,#1f5c1f,#3a8a3a);
+            color: white; border: none; border-radius: 12px;
+            padding: .8rem; font-size: 1rem; font-weight: 700;
+            width: 100%; margin-top: .5rem; transition: .2s;
+        }
+        .btn-registro:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(31,92,31,.3); color:white; }
+        .btn-registro:disabled { opacity: .6; transform: none; cursor: not-allowed; }
+        /* Honeypot — invisible para humanos */
+        .hp-field { display: none !important; }
     </style>
 </head>
 <body>
 <div class="registro-card">
-    <h3 class="text-center fw-bold mb-4" style="color:#2E7D32;">🌱 Crear cuenta</h3>
 
-    <div th:if="${errorGeneral}" class="alert alert-danger text-center py-2"
+    <div class="text-center mb-4">
+        <img th:src="@{/img/LogoCirculoVerde.jpeg}" alt="Logo"
+             style="width:60px;border-radius:50%;border:3px solid #2f6b2f;">
+        <h3 class="fw-bold mt-2 mb-0" style="color:#2E7D32;">Crear cuenta</h3>
+        <p class="text-muted small">Únete a Círculo Verde</p>
+    </div>
+
+    <!-- Error general -->
+    <div th:if="${errorGeneral}" class="alert alert-danger py-2 text-center small"
          th:text="${errorGeneral}"></div>
 
-    <form th:action="@{/registro}" th:object="${usuario}" method="post">
+    <form th:action="@{/registro}" th:object="${usuario}" method="post"
+          id="registroForm" novalidate>
 
+        <!-- HONEYPOT anti-bot: campo oculto que ningún humano rellena -->
+        <div class="hp-field">
+            <input type="text" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <!-- Nombre -->
         <div class="mb-3">
-            <label class="form-label fw-semibold">Nombre de usuario *</label>
+            <label class="form-label">Nombre de usuario <span class="req">*</span></label>
             <input type="text" class="form-control" th:field="*{nombre}"
-                   placeholder="p.ej. MariaHuerto" required>
+                   placeholder="Ej: MariaHuerto" required minlength="3" maxlength="30"
+                   autocomplete="username">
             <div class="text-danger small mt-1"
                  th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+            <div class="text-muted" style="font-size:.75rem; margin-top:3px;">
+                Solo letras, números y guiones. Sin espacios.
+            </div>
         </div>
 
+        <!-- Email -->
         <div class="mb-3">
-            <label class="form-label fw-semibold">Contraseña *</label>
-            <input type="password" class="form-control" th:field="*{contrasenia}"
-                   placeholder="Mínimo 4 caracteres" required>
-            <div class="text-danger small mt-1"
-                 th:if="${#fields.hasErrors('contrasenia')}" th:errors="*{contrasenia}"></div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Email <span class="text-muted fw-normal">(opcional)</span></label>
+            <label class="form-label">Email <span class="req">*</span></label>
             <input type="email" class="form-control" th:field="*{email}"
-                   placeholder="correo@ejemplo.com">
+                   placeholder="correo@ejemplo.com" required autocomplete="email">
             <div class="text-danger small mt-1"
                  th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            <div class="text-muted" style="font-size:.75rem; margin-top:3px;">
+                Necesario para recuperar tu contraseña si la olvidas.
+            </div>
         </div>
 
+        <!-- Contraseña -->
+        <div class="mb-2">
+            <label class="form-label">Contraseña <span class="req">*</span></label>
+            <input type="password" class="form-control" th:field="*{contrasenia}"
+                   id="password" placeholder="Mínimo 6 caracteres" required
+                   minlength="6" autocomplete="new-password"
+                   oninput="checkPasswordStrength(this.value)">
+            <div class="text-danger small mt-1"
+                 th:if="${#fields.hasErrors('contrasenia')}" th:errors="*{contrasenia}"></div>
+            <!-- Barra de fortaleza -->
+            <div class="strength-bar" id="strengthBar" style="width:0;background:#e0e0e0;"></div>
+            <div class="strength-text" id="strengthText"></div>
+        </div>
+
+        <!-- Confirmar contraseña -->
+        <div class="mb-3">
+            <label class="form-label">Confirmar contraseña <span class="req">*</span></label>
+            <input type="password" class="form-control" id="confirmar"
+                   placeholder="Repite tu contraseña" required autocomplete="new-password"
+                   oninput="checkMatch()">
+            <div class="text-danger small mt-1" id="matchError" style="display:none;">
+                Las contraseñas no coinciden.
+            </div>
+        </div>
+
+        <!-- Requisitos contraseña -->
+        <div class="mb-3 p-2" style="background:#f9f9f9;border-radius:8px;">
+            <div class="check-item" id="chk-len">Mínimo 6 caracteres</div>
+            <div class="check-item" id="chk-upper">Al menos una mayúscula</div>
+            <div class="check-item" id="chk-num">Al menos un número</div>
+        </div>
+
+        <!-- Ciudades ordenadas alfabéticamente dentro de cada zona -->
         <div class="mb-4">
-            <label class="form-label fw-semibold">Ciudad *</label>
+            <label class="form-label">Ciudad <span class="req">*</span></label>
             <select class="form-select" th:field="*{ciudad}" required>
                 <option value="">-- Selecciona tu ciudad --</option>
                 <optgroup label="🌞 Mediterránea">
-                    <option value="Valencia">Valencia</option>
                     <option value="Alicante">Alicante</option>
-                    <option value="Murcia">Murcia</option>
-                    <option value="Sevilla">Sevilla</option>
-                    <option value="Málaga">Málaga</option>
-                    <option value="Barcelona">Barcelona</option>
                     <option value="Almería">Almería</option>
+                    <option value="Barcelona">Barcelona</option>
                     <option value="Cádiz">Cádiz</option>
-                    <option value="Palma de Mallorca">Palma de Mallorca</option>
                     <option value="Cartagena">Cartagena</option>
-                    <option value="Elche">Elche</option>
-                    <option value="Marbella">Marbella</option>
                     <option value="Castellón">Castellón</option>
-                    <option value="Tarragona">Tarragona</option>
+                    <option value="Elche">Elche</option>
                     <option value="Girona">Girona</option>
-                    <option value="Huelva">Huelva</option>
                     <option value="Granada">Granada</option>
+                    <option value="Huelva">Huelva</option>
                     <option value="Ibiza">Ibiza</option>
+                    <option value="Málaga">Málaga</option>
+                    <option value="Marbella">Marbella</option>
+                    <option value="Murcia">Murcia</option>
+                    <option value="Palma de Mallorca">Palma de Mallorca</option>
+                    <option value="Sevilla">Sevilla</option>
+                    <option value="Tarragona">Tarragona</option>
                     <option value="Torrevieja">Torrevieja</option>
+                    <option value="Valencia">Valencia</option>
                 </optgroup>
                 <optgroup label="❄️ Continental">
-                    <option value="Madrid">Madrid</option>
-                    <option value="Zaragoza">Zaragoza</option>
-                    <option value="Toledo">Toledo</option>
-                    <option value="Valladolid">Valladolid</option>
-                    <option value="Burgos">Burgos</option>
-                    <option value="Salamanca">Salamanca</option>
                     <option value="Albacete">Albacete</option>
-                    <option value="Guadalajara">Guadalajara</option>
-                    <option value="Segovia">Segovia</option>
                     <option value="Ávila">Ávila</option>
-                    <option value="León">León</option>
+                    <option value="Burgos">Burgos</option>
                     <option value="Cuenca">Cuenca</option>
+                    <option value="Guadalajara">Guadalajara</option>
+                    <option value="León">León</option>
+                    <option value="Madrid">Madrid</option>
+                    <option value="Palencia">Palencia</option>
+                    <option value="Salamanca">Salamanca</option>
+                    <option value="Segovia">Segovia</option>
                     <option value="Soria">Soria</option>
                     <option value="Teruel">Teruel</option>
-                    <option value="Palencia">Palencia</option>
+                    <option value="Toledo">Toledo</option>
+                    <option value="Valladolid">Valladolid</option>
+                    <option value="Zaragoza">Zaragoza</option>
                 </optgroup>
                 <optgroup label="🌧️ Atlántica">
-                    <option value="Bilbao">Bilbao</option>
-                    <option value="Santander">Santander</option>
                     <option value="A Coruña">A Coruña</option>
-                    <option value="Oviedo">Oviedo</option>
-                    <option value="San Sebastián">San Sebastián</option>
-                    <option value="Vigo">Vigo</option>
-                    <option value="Pamplona">Pamplona</option>
+                    <option value="Bilbao">Bilbao</option>
                     <option value="Gijón">Gijón</option>
-                    <option value="Pontevedra">Pontevedra</option>
                     <option value="Lugo">Lugo</option>
                     <option value="Ourense">Ourense</option>
+                    <option value="Oviedo">Oviedo</option>
+                    <option value="Pamplona">Pamplona</option>
+                    <option value="Pontevedra">Pontevedra</option>
+                    <option value="San Sebastián">San Sebastián</option>
+                    <option value="Santander">Santander</option>
+                    <option value="Vigo">Vigo</option>
                     <option value="Vitoria-Gasteiz">Vitoria-Gasteiz</option>
                 </optgroup>
                 <optgroup label="🌴 Subtropical">
-                    <option value="Las Palmas">Las Palmas</option>
-                    <option value="Santa Cruz de Tenerife">Santa Cruz de Tenerife</option>
-                    <option value="Arrecife">Arrecife</option>
-                    <option value="San Cristóbal de la Laguna">San Cristóbal de la Laguna</option>
-                    <option value="Telde">Telde</option>
                     <option value="Arona">Arona</option>
+                    <option value="Arrecife">Arrecife</option>
+                    <option value="Las Palmas">Las Palmas</option>
+                    <option value="San Cristóbal de la Laguna">San Cristóbal de la Laguna</option>
+                    <option value="Santa Cruz de Tenerife">Santa Cruz de Tenerife</option>
+                    <option value="Telde">Telde</option>
                 </optgroup>
             </select>
         </div>
 
-        <button type="submit" class="btn btn-success w-100 py-2 fw-semibold fs-5">
-            Registrarme
+        <!-- Checkbox aceptar términos -->
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="terminos" required>
+            <label class="form-check-label small" for="terminos">
+                Acepto los <a href="#" class="text-success fw-semibold">términos de uso</a>
+                y la <a href="#" class="text-success fw-semibold">política de privacidad</a>
+            </label>
+        </div>
+
+        <button type="submit" class="btn btn-registro" id="btnRegistro">
+            Crear mi cuenta
         </button>
     </form>
 
@@ -137,6 +222,89 @@
         ¿Ya tienes cuenta? <a href="/login" class="fw-semibold text-success">Inicia sesión</a>
     </p>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function checkPasswordStrength(val) {
+        const bar  = document.getElementById('strengthBar');
+        const text = document.getElementById('strengthText');
+        const chkLen   = document.getElementById('chk-len');
+        const chkUpper = document.getElementById('chk-upper');
+        const chkNum   = document.getElementById('chk-num');
+
+        const hasLen   = val.length >= 6;
+        const hasUpper = /[A-Z]/.test(val);
+        const hasNum   = /[0-9]/.test(val);
+        const hasSpec  = /[^A-Za-z0-9]/.test(val);
+
+        chkLen.className   = 'check-item' + (hasLen   ? ' ok' : '');
+        chkUpper.className = 'check-item' + (hasUpper ? ' ok' : '');
+        chkNum.className   = 'check-item' + (hasNum   ? ' ok' : '');
+
+        let score = 0;
+        if (hasLen)   score++;
+        if (hasUpper) score++;
+        if (hasNum)   score++;
+        if (hasSpec)  score++;
+        if (val.length >= 10) score++;
+
+        const levels = [
+            { w:'0%',   bg:'#e0e0e0', t:'' },
+            { w:'25%',  bg:'#e53935', t:'Muy débil' },
+            { w:'50%',  bg:'#fb8c00', t:'Débil' },
+            { w:'70%',  bg:'#fdd835', t:'Moderada' },
+            { w:'85%',  bg:'#7cb342', t:'Buena' },
+            { w:'100%', bg:'#2e7d32', t:'Excelente' },
+        ];
+        const lv = levels[Math.min(score, 5)];
+        bar.style.width = lv.w;
+        bar.style.background = lv.bg;
+        text.textContent = lv.t;
+        text.style.color = lv.bg;
+
+        checkMatch();
+    }
+
+    function checkMatch() {
+        const p1  = document.getElementById('password').value;
+        const p2  = document.getElementById('confirmar').value;
+        const err = document.getElementById('matchError');
+        const btn = document.getElementById('btnRegistro');
+        if (p2.length === 0) { err.style.display='none'; return; }
+        if (p1 !== p2) {
+            err.style.display = 'block';
+            btn.disabled = true;
+        } else {
+            err.style.display = 'none';
+            btn.disabled = false;
+        }
+    }
+
+    // Anti-bot: medir tiempo de rellenado (bots son muy rápidos)
+    const t0 = Date.now();
+    document.getElementById('registroForm').addEventListener('submit', function(e) {
+        const elapsed = Date.now() - t0;
+        // Si el formulario se envía en menos de 3 segundos → probablemente bot
+        if (elapsed < 3000) {
+            e.preventDefault();
+            return false;
+        }
+        // Honeypot: si el campo oculto tiene contenido → bot
+        const hp = this.querySelector('[name="website"]');
+        if (hp && hp.value.length > 0) {
+            e.preventDefault();
+            return false;
+        }
+        // Contraseñas no coinciden
+        const p1 = document.getElementById('password').value;
+        const p2 = document.getElementById('confirmar').value;
+        if (p1 !== p2) {
+            e.preventDefault();
+            document.getElementById('matchError').style.display = 'block';
+            return false;
+        }
+    });
+</script>
 </body>
 </html>
 

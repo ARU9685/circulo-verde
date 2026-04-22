@@ -1,6 +1,7 @@
 package com.circuloverde.circulo_verde.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -24,14 +25,17 @@ public class Usuario {
     private String nombre;
 
     @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 4, message = "La contraseña debe tener al menos 4 caracteres")
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String contrasenia;
 
-    // Email opcional — si se rellena debe tener formato válido
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "Introduce un email válido")
     @Column(unique = true)
     private String email;
 
+    @NotBlank(message = "Selecciona tu ciudad")
     private String ciudad;
+
     private String zonaClimatica;
 
     private LocalDate fechaRegistro = LocalDate.now();
