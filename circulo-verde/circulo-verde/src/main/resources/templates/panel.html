@@ -200,7 +200,7 @@
 
     <!-- HERO -->
     <div class="hero">
-        <h2>Hola, <span th:text="${nombre}">Usuario</span> 👋</h2>
+        <h2>Hola, <span th:text="${nombre}">Usuario</span> </h2>
         <p th:text="${ciudad} + ' · Zona ' + ${zona}"></p>
     </div>
 
@@ -225,7 +225,7 @@
         <!-- Próxima tarea -->
         <div class="col-md-4">
             <div class="cv-card">
-                <div class="cv-card-title">📌 Próxima tarea</div>
+                <div class="cv-card-title"> Próxima tarea</div>
                 <div th:if="${tareas.size() > 0}">
                     <p class="fw-semibold fs-5 mb-1" th:text="${tareas[0].titulo}"></p>
                     <span class="badge rounded-pill px-3 py-2"
@@ -234,10 +234,10 @@
                                            tareas[0].tipo == 'abonado'   ? 'bg-warning text-dark' :
                                                                            'bg-secondary'}"
                           th:text="${tareas[0].tipo}"></span>
-                    <p class="text-muted small mt-2">📅 <span th:text="${tareas[0].fecha}"></span></p>
+                    <p class="text-muted small mt-2"> <span th:text="${tareas[0].fecha}"></span></p>
                 </div>
                 <div th:if="${tareas.isEmpty()}" class="text-muted fst-italic">
-                    No hay tareas pendientes 🎉
+                    No hay tareas pendientes
                 </div>
                 <a href="/calendario" class="btn btn-outline-success btn-sm mt-2">Ver calendario</a>
             </div>
@@ -296,7 +296,7 @@
         <!-- Consejo -->
         <div class="col-md-5">
             <div class="cv-card">
-                <div class="cv-card-title">💡 Consejo para tu zona</div>
+                <div class="cv-card-title"> Consejo para tu zona</div>
                 <div class="consejo-box">
                     <p class="mb-0" th:text="${consejoZona}"></p>
                 </div>
@@ -307,7 +307,7 @@
         <!-- Cultivos recomendados -->
         <div class="col-md-7">
             <div class="cv-card">
-                <div class="cv-card-title">🌱 Cultivos recomendados para tu zona</div>
+                <div class="cv-card-title"> Cultivos recomendados para tu zona</div>
                 <div th:if="${cultivos != null and !cultivos.isEmpty()}">
                     <span th:each="c : ${cultivos}" class="cultivo-badge" th:text="${c}"></span>
                 </div>

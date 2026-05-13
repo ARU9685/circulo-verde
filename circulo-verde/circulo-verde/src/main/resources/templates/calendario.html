@@ -381,7 +381,7 @@
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#collPlagas">
-                            🐛 Plagas frecuentes (Sativum)
+                             Plagas frecuentes (Sativum)
                         </button>
                     </h2>
                     <div id="collPlagas" class="accordion-collapse collapse">
@@ -400,7 +400,7 @@
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#collFert">
-                            🧪 Fertilizantes recomendados (Sativum)
+                             Fertilizantes recomendados (Sativum)
                         </button>
                     </h2>
                     <div id="collFert" class="accordion-collapse collapse">
@@ -430,7 +430,7 @@
         <!-- SEMILLERO -->
         <div class="seccion-cultivos" th:if="${!enSemillero.isEmpty()}">
             <div class="seccion-titulo" style="background:#fff3e0;color:#e65100;">
-                🌱 Iniciar semillero (<span th:text="${enSemillero.size()}"></span>)
+                 Iniciar semillero (<span th:text="${enSemillero.size()}"></span>)
             </div>
             <div class="seccion-body">
                 <div th:each="c, stat : ${enSemillero}"
@@ -445,27 +445,27 @@
                     </div>
                     <div class="cultivo-detalle">
                         <div class="detalle-row">
-                            <span class="detalle-label">⏱ En semillero</span>
+                            <span class="detalle-label"> En semillero</span>
                             <span class="detalle-valor" th:text="${c.diasEnSemillero != null ? c.diasEnSemillero + ' días antes de trasplantar' : 'Siembra directa'}"></span>
                         </div>
                         <div class="detalle-row" th:if="${c.mesesPlantacion != null}">
-                            <span class="detalle-label">🌿 Plantación</span>
+                            <span class="detalle-label"> Plantación</span>
                             <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesPlantacion, ', ')}"></span>
                         </div>
                         <div class="detalle-row" th:if="${c.mesesCosecha != null}">
-                            <span class="detalle-label">🌾 Cosecha</span>
+                            <span class="detalle-label"> Cosecha</span>
                             <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesCosecha, ', ')}"></span>
                         </div>
                         <div class="detalle-row">
-                            <span class="detalle-label">💧 Riego</span>
+                            <span class="detalle-label"> Riego</span>
                             <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
                         </div>
                         <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
-                            <span class="detalle-label">🔧 Cuidados</span><br>
+                            <span class="detalle-label"> Cuidados</span><br>
                             <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
                         </div>
                         <div th:if="${c.nota != null}" class="nota-box mt-2">
-                            💡 <span th:text="${c.nota}"></span>
+                             <span th:text="${c.nota}"></span>
                         </div>
                     </div>
                 </div>
@@ -475,7 +475,7 @@
         <!-- SIEMBRA DIRECTA -->
         <div class="seccion-cultivos" th:if="${!siembraDirecta.isEmpty()}">
             <div class="seccion-titulo" style="background:#e8f5e8;color:#1b5e20;">
-                🌾 Siembra directa (<span th:text="${siembraDirecta.size()}"></span>)
+                 Siembra directa (<span th:text="${siembraDirecta.size()}"></span>)
             </div>
             <div class="seccion-body">
                 <div th:each="c, stat : ${siembraDirecta}"
@@ -489,19 +489,19 @@
                     </div>
                     <div class="cultivo-detalle">
                         <div class="detalle-row">
-                            <span class="detalle-label">💧 Riego</span>
+                            <span class="detalle-label"> Riego</span>
                             <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
                         </div>
                         <div class="detalle-row" th:if="${c.mesesCosecha != null}">
-                            <span class="detalle-label">🌾 Cosecha</span>
+                            <span class="detalle-label"> Cosecha</span>
                             <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesCosecha, ', ')}"></span>
                         </div>
                         <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
-                            <span class="detalle-label">🔧 Cuidados</span><br>
+                            <span class="detalle-label"> Cuidados</span><br>
                             <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
                         </div>
                         <div th:if="${c.nota != null}" class="nota-box mt-2">
-                            💡 <span th:text="${c.nota}"></span>
+                             <span th:text="${c.nota}"></span>
                         </div>
                     </div>
                 </div>
@@ -511,7 +511,7 @@
         <!-- PLANTACIÓN -->
         <div class="seccion-cultivos" th:if="${!enPlantacion.isEmpty()}">
             <div class="seccion-titulo" style="background:#e3f2fd;color:#0d47a1;">
-                🌿 Plantar / Trasplantar (<span th:text="${enPlantacion.size()}"></span>)
+                 Plantar / Trasplantar (<span th:text="${enPlantacion.size()}"></span>)
             </div>
             <div class="seccion-body">
                 <div th:each="c, stat : ${enPlantacion}"
@@ -525,23 +525,23 @@
                     </div>
                     <div class="cultivo-detalle">
                         <div class="detalle-row">
-                            <span class="detalle-label">💧 Riego</span>
+                            <span class="detalle-label"> Riego</span>
                             <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
                         </div>
                         <div class="detalle-row">
-                            <span class="detalle-label">🚿 Tipo riego</span>
+                            <span class="detalle-label"> Tipo riego</span>
                             <span class="detalle-valor" th:text="${c.tipoRiego}"></span>
                         </div>
                         <div class="detalle-row" th:if="${c.mesesCosecha != null}">
-                            <span class="detalle-label">🌾 Cosecha</span>
+                            <span class="detalle-label"> Cosecha</span>
                             <span class="detalle-valor" th:text="${#strings.listJoin(c.mesesCosecha, ', ')}"></span>
                         </div>
                         <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
-                            <span class="detalle-label">🔧 Cuidados</span><br>
+                            <span class="detalle-label"> Cuidados</span><br>
                             <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
                         </div>
                         <div th:if="${c.nota != null}" class="nota-box mt-2">
-                            💡 <span th:text="${c.nota}"></span>
+                             <span th:text="${c.nota}"></span>
                         </div>
                     </div>
                 </div>
@@ -551,7 +551,7 @@
         <!-- COSECHA -->
         <div class="seccion-cultivos" th:if="${!enCosecha.isEmpty()}">
             <div class="seccion-titulo" style="background:#fce4ec;color:#880e4f;">
-                🌾 Cosechar este mes (<span th:text="${enCosecha.size()}"></span>)
+                 Cosechar este mes (<span th:text="${enCosecha.size()}"></span>)
             </div>
             <div class="seccion-body">
                 <div th:each="c, stat : ${enCosecha}"
@@ -565,15 +565,15 @@
                     </div>
                     <div class="cultivo-detalle">
                         <div class="detalle-row">
-                            <span class="detalle-label">💧 Riego</span>
+                            <span class="detalle-label"> Riego</span>
                             <span class="detalle-valor" th:text="${c.frecuenciaRiego}"></span>
                         </div>
                         <div th:if="${!c.tareasCuidado.isEmpty()}" class="mt-1">
-                            <span class="detalle-label">🔧 Cuidados</span><br>
+                            <span class="detalle-label"> Cuidados</span><br>
                             <span th:each="t : ${c.tareasCuidado}" class="cuidado-pill" th:text="${t}"></span>
                         </div>
                         <div th:if="${c.nota != null}" class="nota-box mt-2">
-                            💡 <span th:text="${c.nota}"></span>
+                             <span th:text="${c.nota}"></span>
                         </div>
                     </div>
                 </div>
@@ -610,10 +610,10 @@
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Tipo</label>
                         <select class="form-select" name="tipo">
-                            <option value="riego">💧 Riego</option>
-                            <option value="siembra">🌱 Siembra</option>
-                            <option value="abonado">🧪 Abonado</option>
-                            <option value="mantenimiento">🔧 Mantenimiento</option>
+                            <option value="riego"> Riego</option>
+                            <option value="siembra"> Siembra</option>
+                            <option value="abonado"> Abonado</option>
+                            <option value="mantenimiento"> Mantenimiento</option>
                         </select>
                     </div>
                 </div>
