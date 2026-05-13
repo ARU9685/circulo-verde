@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg shadow-sm"
+     style="background: linear-gradient(90deg,#1a3d1a,#2f6b2f);">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-white" href="/panel">
+            <img th:src="@{/img/LogoCirculoVerde.jpeg}" alt="Logo" style="height:38px;border-radius:50%;border:2px solid #a8d5a2;">
+            <span style="letter-spacing:.5px;">Círculo Verde</span>
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMain">
+            <ul class="navbar-nav me-auto ms-3 gap-1">
+                <li class="nav-item">
+                    <a class="nav-link text-white fw-medium px-3 py-2 rounded-pill"
+                       style="transition:.2s" onmouseover="this.style.background='rgba(255,255,255,.15)'"
+                       onmouseout="this.style.background=''" href="/panel">🏡 Mi huerto</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white fw-medium px-3 py-2 rounded-pill"
+                       style="transition:.2s" onmouseover="this.style.background='rgba(255,255,255,.15)'"
+                       onmouseout="this.style.background=''" href="#" data-bs-toggle="dropdown">
+                        🌿 Gestión
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow-sm" style="border-radius:10px;">
+                        <li><a class="dropdown-item py-2" href="/calendario">📅 Calendario</a></li>
+                        <li><a class="dropdown-item py-2" href="/inventario">📦 Inventario</a></li>
+                        <li><a class="dropdown-item py-2" href="/diario">📓 Diario</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2" href="/estadisticas">📊 Estadísticas</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <a href="/logout" class="btn btn-sm fw-semibold"
+               style="background:rgba(255,255,255,.2);color:white;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:6px 18px;">
+                Salir →
+            </a>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
