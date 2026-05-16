@@ -56,16 +56,23 @@ public class SeguridadConfig {
                                 new AntPathRequestMatcher("/static/**"),
                                 new AntPathRequestMatcher("/webjars/**")
                         ).permitAll()
-                        // Todo lo demás requiere login
+                        // Lo demas requiere login
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/login")       // Spring Security procesa el POST aquí
+                        .loginProcessingUrl("/login")       // Spring Security procesa
                         .defaultSuccessUrl("/post-login", true)
                         .failureUrl("/login?error")
                         .permitAll()
                 )
+
+                // LOGIN GOOGLE
+                .oauth2Login(oauth -> oauth
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/post-login", true)
+                )
+
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/login?logout")

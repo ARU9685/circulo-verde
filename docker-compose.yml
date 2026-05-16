@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: circuloverde2
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3309:3306"
+  app:
+    build: .
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_URL: jdbc:mysql://mysql:3306/circuloverde2
+      DB_USER: root
+      DB_PASSWORD: root
+      SATIVUM_TOKEN: ${SATIVUM_TOKEN}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql

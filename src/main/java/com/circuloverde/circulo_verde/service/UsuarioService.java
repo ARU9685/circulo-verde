@@ -46,4 +46,21 @@ public class UsuarioService implements UserDetailsService {
     public Usuario buscarPorNombre(String nombre) {
         return usuarioRepository.findByNombre(nombre);
     }
+
+    public Usuario buscarPorEmail(String email) {
+
+        Usuario usuario =
+                usuarioRepository.findByEmail(email);
+
+        if (usuario == null) {
+
+            throw new RuntimeException(
+                    "Usuario no encontrado"
+            );
+        }
+
+        return usuario;
+    }
+
+
 }
