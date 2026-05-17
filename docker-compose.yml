@@ -1,21 +1,71 @@
 version: "3.9"
+
 services:
+
   mysql:
-    image: mysql:8
+    image: mysql:8.0
+    container_name: circuloverde-mysql
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: circuloverde2
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - cv-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  phpmyadmin:
+    image: phpmyadmin:5.2
+    container_name: circuloverde-pma
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    ports:
+      - "8081:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - cv-network
+
   app:
     build: .
+    container_name: circuloverde-app
+    restart: unless-stopped
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
       DB_URL: jdbc:mysql://mysql:3306/circuloverde2
-      DB_USER: root
-      DB_PASSWORD: root
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      WEATHER_API_KEY: ${WEATHER_API_KEY}
+      AEMET_API_KEY: ${AEMET_API_KEY}
       SATIVUM_TOKEN: ${SATIVUM_TOKEN}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
     ports:
       - "8080:8080"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+    networks:
+      - cv-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  cv-network:
+    driver: bridge
