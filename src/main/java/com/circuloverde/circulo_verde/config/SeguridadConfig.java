@@ -18,10 +18,12 @@ public class SeguridadConfig {
 
     private final UsuarioService usuarioService;
     private final PasswordEncoder passwordEncoder;
+    private final Auth2LoginSuccessHandler auth2SuccessHandler;
 
-    public SeguridadConfig(UsuarioService usuarioService, PasswordEncoder passwordEncoder) {
+    public SeguridadConfig(UsuarioService usuarioService, PasswordEncoder passwordEncoder, Auth2LoginSuccessHandler auth2SuccessHandler) {
         this.usuarioService = usuarioService;
         this.passwordEncoder = passwordEncoder;
+        this.auth2SuccessHandler  = auth2SuccessHandler;
     }
 
     @Bean
@@ -49,6 +51,7 @@ public class SeguridadConfig {
                                 new AntPathRequestMatcher("/login/**"),
                                 new AntPathRequestMatcher("/registro"),
                                 new AntPathRequestMatcher("/registro/**"),
+                                new AntPathRequestMatcher("/completar-perfil"),
                                 new AntPathRequestMatcher("/css/**"),
                                 new AntPathRequestMatcher("/js/**"),
                                 new AntPathRequestMatcher("/img/**"),
@@ -70,7 +73,7 @@ public class SeguridadConfig {
                 // LOGIN GOOGLE
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login")
-                        .defaultSuccessUrl("/post-login", true)
+                        .successHandler(auth2SuccessHandler)
                 )
 
                 .logout(logout -> logout

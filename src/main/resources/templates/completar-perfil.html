@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Completar perfil | Círculo Verde</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #A5D6A7, #2E7D32);
+        font-family: "Segoe UI", sans-serif;
+    }
+    .card {
+        width: 100%;
+        max-width: 460px;
+        border-radius: 16px;
+        padding: 2rem 2.2rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,.2);
+        animation: fadeIn .5s ease-out;
+    }
+    @keyframes fadeIn {
+        from { opacity:0; transform:translateY(20px); }
+        to   { opacity:1; transform:translateY(0); }
+    }
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 1.5px solid #d0e8d0;
+        padding: .65rem 1rem;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #2f6b2f;
+        box-shadow: 0 0 0 3px rgba(47,107,47,.12);
+    }
+    .btn-guardar {
+        background: linear-gradient(135deg,#1f5c1f,#3a8a3a);
+        color: white; border: none; border-radius: 12px;
+        padding: .8rem; font-size: 1rem; font-weight: 700;
+        width: 100%; transition: .2s;
+    }
+    .btn-guardar:hover { transform: translateY(-2px); color: white; }
+    .email-badge {
+        background: #e8f5e8; border-radius: 8px;
+        padding: .5rem 1rem; font-size: .88rem;
+        color: #2e7d32; margin-bottom: 1.5rem;
+        border: 1px solid #c8e6c8;
+    }
+  </style>
+</head>
+<body>
+<div class="card bg-white">
+  <div class="text-center mb-3">
+    <img th:src="@{/img/LogoCirculoVerde.jpeg}" alt="Logo"
+         style="width:60px;border-radius:50%;border:3px solid #2f6b2f;">
+    <h4 class="fw-bold mt-2 mb-0" style="color:#2E7D32;">¡Casi listo!</h4>
+    <p class="text-muted small">Completa tu perfil para acceder al huerto</p>
+  </div>
+
+  <!-- Email de Google -->
+  <div class="email-badge text-center">
+    Autenticado con Google como <strong th:text="${email}"></strong>
+  </div>
+
+  <form action="/completar-perfil" method="post">
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Nombre de usuario</label>
+      <input type="text" class="form-control" name="nombre"
+             th:value="${nombreSugerido}"
+             placeholder="Ej: MariaHuerto" required minlength="3" maxlength="30">
+      <div class="text-muted" style="font-size:.75rem;margin-top:3px;">
+        Este será tu nombre en la app. Puedes cambiarlo.
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label fw-semibold">Ciudad</label>
+      <select class="form-select" name="ciudad" required>
+        <option value="">-- Selecciona tu ciudad --</option>
+        <optgroup label="🌞 Mediterránea">
+          <option value="Alicante">Alicante</option>
+          <option value="Almería">Almería</option>
+          <option value="Barcelona">Barcelona</option>
+          <option value="Cádiz">Cádiz</option>
+          <option value="Cartagena">Cartagena</option>
+          <option value="Castellón">Castellón</option>
+          <option value="Elche">Elche</option>
+          <option value="Girona">Girona</option>
+          <option value="Granada">Granada</option>
+          <option value="Huelva">Huelva</option>
+          <option value="Ibiza">Ibiza</option>
+          <option value="Málaga">Málaga</option>
+          <option value="Marbella">Marbella</option>
+          <option value="Murcia">Murcia</option>
+          <option value="Palma de Mallorca">Palma de Mallorca</option>
+          <option value="Sevilla">Sevilla</option>
+          <option value="Tarragona">Tarragona</option>
+          <option value="Valencia">Valencia</option>
+        </optgroup>
+        <optgroup label="❄️ Continental">
+          <option value="Albacete">Albacete</option>
+          <option value="Ávila">Ávila</option>
+          <option value="Burgos">Burgos</option>
+          <option value="Cuenca">Cuenca</option>
+          <option value="Guadalajara">Guadalajara</option>
+          <option value="León">León</option>
+          <option value="Madrid">Madrid</option>
+          <option value="Palencia">Palencia</option>
+          <option value="Salamanca">Salamanca</option>
+          <option value="Segovia">Segovia</option>
+          <option value="Soria">Soria</option>
+          <option value="Teruel">Teruel</option>
+          <option value="Toledo">Toledo</option>
+          <option value="Valladolid">Valladolid</option>
+          <option value="Zaragoza">Zaragoza</option>
+        </optgroup>
+        <optgroup label="🌧️ Atlántica">
+          <option value="A Coruña">A Coruña</option>
+          <option value="Bilbao">Bilbao</option>
+          <option value="Gijón">Gijón</option>
+          <option value="Lugo">Lugo</option>
+          <option value="Ourense">Ourense</option>
+          <option value="Oviedo">Oviedo</option>
+          <option value="Pamplona">Pamplona</option>
+          <option value="Pontevedra">Pontevedra</option>
+          <option value="San Sebastián">San Sebastián</option>
+          <option value="Santander">Santander</option>
+          <option value="Vigo">Vigo</option>
+          <option value="Vitoria-Gasteiz">Vitoria-Gasteiz</option>
+        </optgroup>
+        <optgroup label="🌴 Subtropical">
+          <option value="Arona">Arona</option>
+          <option value="Arrecife">Arrecife</option>
+          <option value="Las Palmas">Las Palmas</option>
+          <option value="Santa Cruz de Tenerife">Santa Cruz de Tenerife</option>
+          <option value="Telde">Telde</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <button type="submit" class="btn-guardar">Entrar al huerto </button>
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
